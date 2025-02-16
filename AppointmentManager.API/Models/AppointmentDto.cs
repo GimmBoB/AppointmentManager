@@ -1,5 +1,4 @@
 ﻿
-
 // TODO bitches müssen Foto hochladen
 namespace AppointmentManager.API.Models;
 

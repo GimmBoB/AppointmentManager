@@ -16,7 +16,8 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DatabaseConfiguration__ConnectionString": "Server=localhost\\SQLEXPRESS;Database=AppointmentManager;Trusted_Connection=True;TrustServerCertificate=True;"
       }
     },
     "IIS Express": {
