@@ -1,7 +1,7 @@
-﻿using AppointmentManager.API.Models;
+﻿
 
 // TODO bitches müssen Foto hochladen
-namespace AppointmentManager.API.Dto;
+namespace AppointmentManager.API.Models;
 
 public record AppointmentDto(
         string Name,

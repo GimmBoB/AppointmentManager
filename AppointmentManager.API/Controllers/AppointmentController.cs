@@ -1,4 +1,4 @@
-﻿using AppointmentManager.API.Dto;
+﻿using AppointmentManager.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManager.API.Controllers;
