@@ -30,15 +30,29 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         {
             builder.HasKey(appointment => appointment.Id);
             builder
-                .HasOne<AppointmentCategory>()
+                .HasOne(appointment => appointment.AppointmentCategory)
                 .WithMany()
                 .HasForeignKey(appointment => appointment.AppointmentCategoryId).OnDelete(DeleteBehavior.Restrict);
             builder
-                .HasMany<AppointmentExtension>()
+                .HasMany(appointment => appointment.AppointmentExtensions)
                 .WithOne(extension => extension.Appointment)
-                .HasForeignKey(extension => extension.AppointmentId);
+                .HasForeignKey(extension => extension.AppointmentId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
-        
-        // TODO complete schema
+
+        modelBuilder.Entity<AppointmentCategory>(builder =>
+        {
+            builder.HasKey(category => category.Id);
+        });
+
+        modelBuilder.Entity<AppointmentExtension>(builder =>
+        {
+            builder.HasKey(extension => extension.Id);
+        });
+
+        modelBuilder.Entity<AppointmentTimeSlot>(builder =>
+        {
+            builder.HasKey(slot => slot.Id);
+        });
     }
 }

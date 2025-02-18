@@ -12,6 +12,6 @@ public class Appointment
     public DateTime From { get; init; }
     public DateTime To { get; init; }
     public AppointmentStatus Status { get; init; }
-    [ForeignKey(nameof(AppointmentCategoryId))] public virtual AppointmentCategory? Category { get; init; }
+    [ForeignKey(nameof(AppointmentCategoryId))] public virtual AppointmentCategory? AppointmentCategory { get; init; }
     public virtual ICollection<AppointmentExtension> AppointmentExtensions { get; init; } = new List<AppointmentExtension>();
 }
