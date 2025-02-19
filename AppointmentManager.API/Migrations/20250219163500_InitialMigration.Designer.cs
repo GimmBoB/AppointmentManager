@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AppointmentManager.API.Migrations
 {
-    [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20250218185203_InitialMigration")]
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20250219163500_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

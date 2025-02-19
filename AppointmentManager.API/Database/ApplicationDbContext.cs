@@ -1,22 +1,32 @@
-﻿using AppointmentManager.API.Models;
+﻿using AppointmentManager.API.config;
+using AppointmentManager.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace AppointmentManager.API.Database;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+    private readonly DatabaseConfiguration _configuration;
+
+    public ApplicationDbContext(DbContextOptions dbContextOptions, DatabaseConfiguration configuration) : base(dbContextOptions)
     {
+        _configuration = configuration;
     }
     
-    public DatabaseFacade GetDatabase() => base.Database;
     public virtual DbSet<Admin> Admins { get; set; }
     public virtual DbSet<Appointment> Appointments { get; set; }
     public virtual DbSet<AppointmentCategory> AppointmentCategories { get; set; }
     public virtual DbSet<AppointmentExtension> AppointmentExtensions { get; set; }
     public virtual DbSet<AppointmentTimeSlot> AppointmentTimeSlots { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        ArgumentNullException.ThrowIfNull(_configuration.ConnectionString);
+
+        optionsBuilder.UseSqlServer(_configuration.ConnectionString);
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

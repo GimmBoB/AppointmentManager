@@ -28,4 +28,11 @@ app.MapControllers();
 
 app.MigrateDatabase();
 
+var serviceProvider =
+    app.Services
+        .GetRequiredService<IServiceScopeFactory>()
+        .CreateScope().ServiceProvider;
+
+await SeedDatabase.SeedAsync(serviceProvider);
+
 app.Run();

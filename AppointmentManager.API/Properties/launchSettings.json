@@ -17,15 +17,16 @@
       "applicationUrl": "https://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DatabaseConfiguration__ConnectionString": "Server=localhost\\SQLEXPRESS;Database=AppointmentManager;Trusted_Connection=True;TrustServerCertificate=True;"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "DatabaseConfiguration__ConnectionString": "Server=localhost\\SQLEXPRESS;Database=AppointmentManager;Trusted_Connection=True;TrustServerCertificate=True;",
+        "AdminConfiguration__Admins__0__Id": "8FBA5265-3FB3-4E6D-B031-B8381035E905",
+        "AdminConfiguration__Admins__0__Name": "Timo Gimm",
+        "AdminConfiguration__Admins__0__Email": "timo.gimm@web.de",
+        "AdminConfiguration__Admins__0__Password": "Uxe1>eDD8jTv",
+        "AdminConfiguration__Admins__1__Id": "584DDE96-F37B-4C2D-AA68-E82F269A39A2",
+        "AdminConfiguration__Admins__1__Name": "Thomas Weigang",
+        "AdminConfiguration__Admins__1__Email": "rent.your.engineer@gmail.com",
+        "AdminConfiguration__Admins__1__Password": "B<1gWUzLlvX3"
+        
       }
     }
   }

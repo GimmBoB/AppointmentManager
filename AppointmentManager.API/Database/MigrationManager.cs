@@ -13,11 +13,11 @@ public static class MigrationManager
         ArgumentNullException.ThrowIfNull(dbConfig, nameof(DatabaseConfiguration));
 
         using var dbContext = GetDatabaseContext(scope);
-        var database = dbContext.GetDatabase();
+        var database = dbContext.Database;
         database.Migrate();
 
         return host;
     }
 
-    private static IApplicationDbContext GetDatabaseContext(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<SqlServerDbContext>();
+    private static ApplicationDbContext GetDatabaseContext(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 }

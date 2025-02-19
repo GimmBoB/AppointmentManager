@@ -8,14 +8,16 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAppointmentManagerServices(this IServiceCollection services,
         ConfigurationManager configurationManager)
     {
-        services.AddScoped<IApplicationDbContext, SqlServerDbContext>();
-        services.AddDbContext<SqlServerDbContext>();
+        services.AddDbContext<ApplicationDbContext>();
 
-        var dbConfig =  new DatabaseConfiguration();
+        var dbConfig = new DatabaseConfiguration();
+        var adminConfig = new AdminConfiguration(); 
         
         configurationManager.GetSection(nameof(DatabaseConfiguration)).Bind(dbConfig);
+        configurationManager.GetSection(nameof(AdminConfiguration)).Bind(adminConfig);
 
         services.AddSingleton(dbConfig);
+        services.AddSingleton(adminConfig);
         
         return services;
     }
