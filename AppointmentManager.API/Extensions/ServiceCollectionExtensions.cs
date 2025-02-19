@@ -1,5 +1,7 @@
 ﻿using AppointmentManager.API.config;
+using AppointmentManager.API.ControllerServices;
 using AppointmentManager.API.Database;
+using AppointmentManager.API.Repositories;
 
 namespace AppointmentManager.API.Extensions;
 
@@ -18,6 +20,9 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(dbConfig);
         services.AddSingleton(adminConfig);
+
+        services.AddScoped<AdminService>();
+        services.AddScoped<AdminRepository>();
         
         return services;
     }
