@@ -3,6 +3,7 @@
 namespace AppointmentManager.API.Models;
 
 public record AppointmentDto(
+        Guid Id,
         string Name,
         string Email,
         string ExtraWishes,

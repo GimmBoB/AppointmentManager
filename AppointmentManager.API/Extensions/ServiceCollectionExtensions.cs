@@ -23,6 +23,12 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<AdminService>();
         services.AddScoped<AdminRepository>();
+
+        services.AddScoped<AppointmentTimeSlotService>();
+        services.AddScoped<AppointmentTimeSlotRepository>();
+
+        services.AddScoped<AppointmentCategoryService>();
+        services.AddScoped<AppointmentCategoryRepository>();
         
         return services;
     }

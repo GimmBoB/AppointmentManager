@@ -14,10 +14,10 @@ public class AdminRepository
 
     public async Task<Admin> UpdateAsync(Admin admin)
     {
-        _dbContext.Admins.Update(admin);
+        var result = _dbContext.Admins.Update(admin).Entity;
         await _dbContext.SaveChangesAsync();
 
-        return admin;
+        return result;
     }
 
     public async Task<Admin?> GetByIdAsync(Guid id) => await _dbContext.Admins.FindAsync(id);

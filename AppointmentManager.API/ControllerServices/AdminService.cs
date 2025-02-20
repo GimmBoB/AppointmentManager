@@ -17,49 +17,52 @@ public class AdminService
         _configuration = configuration;
     }
 
-    public async Task<Result> GetByIdAsync(Guid id)
+    public async Task<ApiResult> GetByIdAsync(Guid id)
     {
         var admin = await _repository.GetByIdAsync(id);
 
         if (admin is null)
-            return Result.NotFound();
+            return ApiResult.NotFound();
 
-        return ItemResult<AdminDto>.Succeeded(new AdminDto(id, admin.Name!, admin.Email!));
+        return ItemApiResult<AdminDto>.Succeeded(new AdminDto(id, admin.Name!, admin.Email!));
     }
 
-    public async Task<Result> UpdateAsync(Guid id, AdminDto dto)
+    public async Task<ApiResult> UpdateAsync(Guid id, AdminDto dto)
     {
         var admin = await _repository.GetByIdAsync(id);
 
         if (admin is null)
-            return Result.NotFound();
+            return ApiResult.NotFound();
 
         var errors = Validate(dto);
 
         if (errors.Count > 0)
-            return Result.Failure(errors);
+            return ApiResult.Failure(errors);
 
         admin.Name = dto.Name.Trim();
         admin.Email = dto.Email.Trim();
 
         await _repository.UpdateAsync(admin);
 
-        return ItemResult<AdminDto>.Succeeded(dto);
+        return ItemApiResult<AdminDto>.Succeeded(dto with { Id = id });
     }
 
-    public async Task<Result> UpdatePasswordAsync(Guid id, string password)
+    public async Task<ApiResult> UpdatePasswordAsync(Guid id, string password)
     {
         var admin = await _repository.GetByIdAsync(id);
 
         if (admin is null)
-            return Result.NotFound();
+            return ApiResult.NotFound();
+
+        if (string.IsNullOrWhiteSpace(password))
+            return ApiResult.Failure(new []{"Password not set"});
         
         var encrypt = StringCipher.Encrypt(password, _configuration.SecretKey);
         admin.Password = encrypt;
 
         await _repository.UpdateAsync(admin);
 
-        return Result.Succeeded();
+        return ApiResult.Succeeded();
     }
 
     private static ICollection<string> Validate(AdminDto dto)

@@ -3,7 +3,7 @@
 public class AppointmentTimeSlot
 {
     public Guid Id { get; init; }
-    public Days Day { get; init; }
-    public TimeSpan From { get; init; }
-    public TimeSpan To { get; init; }
+    public Days Day { get; set; }
+    public TimeSpan From { get; set; }
+    public TimeSpan To { get; set; }
 }

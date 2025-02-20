@@ -1,15 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManager.API.Controllers;
 
+[ApiController]
+[Route("[controller]")]
 public abstract class ApplicationControllerBase : ControllerBase
 {
-    protected ActionResult GetResult<T>(Result result)
+    protected async Task<ActionResult> GetResultAsync<T>(Func<Task<ApiResult>> func)
         where T : class
     {
-        if (result.Success)
+        ApiResult apiResult;
+
+        try
         {
-            if (result is ItemResult<T> itemResult)
+            apiResult = await func();
+        }
+        catch (Exception e)
+        {
+            return Problem(statusCode: (int)HttpStatusCode.InternalServerError, detail: e.Message,
+                title: "Unhandled Error");
+        }
+        
+        if (apiResult.Success)
+        {
+            if (apiResult is ItemApiResult<T> itemResult)
             {
                 return Ok(itemResult.Item);
             }
@@ -17,8 +32,8 @@ public abstract class ApplicationControllerBase : ControllerBase
             return Ok();
         }
 
-        if (result.Errors.Count > 0)
-            return BadRequest(result.Errors);
+        if (apiResult.Errors.Count > 0)
+            return BadRequest(apiResult.Errors);
         
         return NotFound();
     }
