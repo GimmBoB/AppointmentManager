@@ -1,5 +1,8 @@
 using AppointmentManager.API.Database;
 using AppointmentManager.API.Extensions;
+using AppointmentManager.API.QuartzJobs;
+using AppointmentManager.API.Security;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAppointmentManagerServices(builder.Configuration);
+
+builder.Services.AddQuartz(options =>
+{
+    // options.UseMicrosoftDependencyInjectionJobFactory();
+
+    // Register the job, loading the schedule from configuration
+    options.AddJobAndTrigger<EnsureValidCertificateJob>(builder.Configuration);
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
 
 var app = builder.Build();
 
@@ -33,6 +46,7 @@ var serviceProvider =
         .GetRequiredService<IServiceScopeFactory>()
         .CreateScope().ServiceProvider;
 
+SeedCertificateStore.Initialize(serviceProvider);
 await SeedDatabase.SeedAsync(serviceProvider);
 
 app.Run();
