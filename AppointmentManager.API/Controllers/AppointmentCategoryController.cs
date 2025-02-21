@@ -31,5 +31,5 @@ public class AppointmentCategoryController : ApplicationControllerBase
 
     [HttpDelete("{id:guid}")]
     public Task<ActionResult> DeleteAsync(Guid id, CancellationToken ct) =>
-        GetResultAsync<CategoryDto>(() => _service.DeleteAsync(id, ct));
+        GetResultAsync(() => _service.DeleteAsync(id, ct));
 }

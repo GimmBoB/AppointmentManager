@@ -19,5 +19,4 @@ public class ApiResult
     
     public static ApiResult Succeeded() => new(true);
     public static ApiResult Failure(IEnumerable<string> errors) => new(errors);
-    public static ApiResult NotFound() => new(false);
 }

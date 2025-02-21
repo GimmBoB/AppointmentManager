@@ -17,7 +17,7 @@ public class AppointmentCategoryService
         var category = await _repository.GetByIdAsync(id, ct);
 
         if (category is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         return ItemApiResult<CategoryDto>.Succeeded(MapToDto(category));
     }
@@ -42,7 +42,7 @@ public class AppointmentCategoryService
         var category = await _repository.GetByIdAsync(id, ct);
 
         if (category is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         var categories = await _repository.GetAsync(new CategorySearchFilter(dto.Name), ct);
         
@@ -71,7 +71,7 @@ public class AppointmentCategoryService
         var category = await _repository.GetByIdAsync(id, ct);
 
         if (category is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
         
         await _repository.DeleteAsync(category, ct);
         

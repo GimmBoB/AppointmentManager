@@ -22,7 +22,7 @@ public class AdminService
         var admin = await _repository.GetByIdAsync(id, ct);
 
         if (admin is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         return ItemApiResult<AdminDto>.Succeeded(MapToDto(admin));
     }
@@ -32,7 +32,7 @@ public class AdminService
         var admin = await _repository.GetByIdAsync(id, ct);
 
         if (admin is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         var errors = Validate(dto);
 
@@ -52,7 +52,7 @@ public class AdminService
         var admin = await _repository.GetByIdAsync(id, ct);
 
         if (admin is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         if (string.IsNullOrWhiteSpace(password))
             return ApiResult.Failure(new []{"Password not set"});

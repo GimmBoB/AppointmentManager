@@ -28,13 +28,6 @@ public class AppointmentExtensionRepository
         return result;
     }
 
-    public async Task<List<AppointmentExtension>> GetAsync(AppointmentExtensionSearchFilter searchFilter, CancellationToken _)
-    {
-        var query = _dbContext.AppointmentExtensions.AsQueryable();
-
-        if (searchFilter.AppointmentIds.Any())
-            query = query.Where(extension => searchFilter.AppointmentIds.Contains(extension.AppointmentId));
-
-        return query.ToList();
-    }
+    public async Task<AppointmentExtension?> GetByIdAsync(Guid id, CancellationToken ct) =>
+        await _dbContext.AppointmentExtensions.FindAsync(new object?[] { id }, cancellationToken: ct);
 }

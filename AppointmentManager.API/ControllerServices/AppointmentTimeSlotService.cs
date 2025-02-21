@@ -17,7 +17,7 @@ public class AppointmentTimeSlotService
         var timeslot = await _repository.GetByIdAsync(id, ct);
 
         if (timeslot is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         return ItemApiResult<AppointmentTimeSlotDto>.Succeeded(MapToDto(timeslot));
     }
@@ -42,7 +42,7 @@ public class AppointmentTimeSlotService
         var timeSlot = await _repository.GetByIdAsync(id, ct);
 
         if (timeSlot is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         var timeSlots = await _repository.GetAsync(new TimeSlotSearchFilter(dto.Day), ct);
         var errors = Validate(id, dto, timeSlots);
@@ -78,7 +78,7 @@ public class AppointmentTimeSlotService
         var timeSlot = await _repository.GetByIdAsync(id, ct);
 
         if (timeSlot is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
         
         await _repository.DeleteAsync(timeSlot, ct);
         

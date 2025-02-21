@@ -35,5 +35,5 @@ public class AppointmentTimeSlotController : ApplicationControllerBase
 
     [HttpDelete("{id:guid}")]
     public Task<ActionResult> DeleteAsync(Guid id, CancellationToken ct) =>
-        GetResultAsync<AppointmentTimeSlotDto>(() => _service.DeleteAsync(id,ct));
+        GetResultAsync(() => _service.DeleteAsync(id,ct));
 }

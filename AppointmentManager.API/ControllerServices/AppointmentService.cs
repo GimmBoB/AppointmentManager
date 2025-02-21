@@ -22,7 +22,7 @@ public class AppointmentService
         var appointment = await _repository.GetByIdAsync(id, ct);
 
         if (appointment is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         return ItemApiResult<AppointmentDto>.Succeeded(MapToDto(appointment));
     }
@@ -57,7 +57,7 @@ public class AppointmentService
         var appointment = await _repository.GetByIdAsync(id, ct);
 
         if (appointment is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
         
         var appointments = await _repository.GetAsync(new AppointmentSearchFilter(dto.From, dto.To), ct);
         var timeslots = await _timeSlotRepository.GetAsync(new TimeSlotSearchFilter(dto.From.DayOfWeek), ct);

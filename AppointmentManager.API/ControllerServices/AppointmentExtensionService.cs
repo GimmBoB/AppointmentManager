@@ -1,8 +1,8 @@
-﻿using AppointmentManager.API.Models;
+﻿using AppointmentManager.API.Extensions;
+using AppointmentManager.API.Models;
 using AppointmentManager.API.Repositories;
 
 namespace AppointmentManager.API.ControllerServices;
-// TODO weitermachen
 public class AppointmentExtensionService
 {
     private readonly AppointmentExtensionRepository _repository;
@@ -14,11 +14,11 @@ public class AppointmentExtensionService
         _appointmentRepository = appointmentRepository;
     }
 
-    public async Task<ApiResult> AddAsync(Guid appointmentId, IFormFile file, CancellationToken ct)
+    public async Task<ApiResult> AddFileAsync(Guid appointmentId, IFormFile file, CancellationToken ct)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(appointmentId, ct);
         if (appointment is null)
-            return ApiResult.NotFound();
+            return NotFoundApiResult.NotFound();
 
         var path = GetOrCreateAppointmentImagesFolderPath();
         var explicitImagePath = GetOrCreateAppointmentImagePath(path, appointment);
@@ -29,6 +29,21 @@ public class AppointmentExtensionService
         
         return ApiResult.Succeeded();
     }
+
+    public async Task<ImageInfoDto?> GetImageInfoAsync(Guid id, CancellationToken ct)
+    {
+        var extension = await _repository.GetByIdAsync(id, ct);
+        
+
+        var result = extension is not null 
+            ? CreateImageInfoDto(extension)
+            : default;
+
+        return result;
+    }
+
+    private ImageInfoDto CreateImageInfoDto(AppointmentExtension extension) => new(extension.FilePath,
+        $"image/{Path.GetExtension(extension.FilePath).SubstringFromChar('.')}");
 
     private static string GetOrCreateAppointmentImagesFolderPath()
     {
