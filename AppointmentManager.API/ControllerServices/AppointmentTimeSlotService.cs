@@ -12,9 +12,19 @@ public class AppointmentTimeSlotService
         _repository = repository;
     }
 
-    public async Task<ApiResult> AddAsync(AppointmentTimeSlotDto dto)
+    public async Task<ApiResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        var timeSlots = await _repository.GetAsync(new TimeSlotSearchFilter(dto.Day));
+        var timeslot = await _repository.GetByIdAsync(id, ct);
+
+        if (timeslot is null)
+            return ApiResult.NotFound();
+
+        return ItemApiResult<AppointmentTimeSlotDto>.Succeeded(MapToDto(timeslot));
+    }
+
+    public async Task<ApiResult> AddAsync(AppointmentTimeSlotDto dto, CancellationToken ct)
+    {
+        var timeSlots = await _repository.GetAsync(new TimeSlotSearchFilter(dto.Day), ct);
 
         var errors = Validate(Guid.Empty, dto, timeSlots);
 
@@ -22,19 +32,19 @@ public class AppointmentTimeSlotService
             return ApiResult.Failure(errors);
 
         var timeslot = await _repository.AddAsync(new AppointmentTimeSlot
-            { Day = dto.Day, From = dto.From, To = dto.To });
+            { Day = dto.Day, From = dto.From, To = dto.To }, ct);
 
-        return ItemApiResult<AppointmentTimeSlotDto>.Succeeded(dto with{Id = timeslot.Id});
+        return ItemApiResult<AppointmentTimeSlotDto>.Created(MapToDto(timeslot));
     }
 
-    public async Task<ApiResult> UpdateAsync(Guid id, AppointmentTimeSlotDto dto)
+    public async Task<ApiResult> UpdateAsync(Guid id, AppointmentTimeSlotDto dto, CancellationToken ct)
     {
-        var timeSlot = await _repository.GetByIdAsync(id);
+        var timeSlot = await _repository.GetByIdAsync(id, ct);
 
         if (timeSlot is null)
             return ApiResult.NotFound();
 
-        var timeSlots = await _repository.GetAsync(new TimeSlotSearchFilter(dto.Day));
+        var timeSlots = await _repository.GetAsync(new TimeSlotSearchFilter(dto.Day), ct);
         var errors = Validate(id, dto, timeSlots);
 
         if (errors.Count > 0)
@@ -44,33 +54,33 @@ public class AppointmentTimeSlotService
         timeSlot.From = dto.From;
         timeSlot.To = dto.To;
 
-        await _repository.UpdateAsync(timeSlot);
+        var result = await _repository.UpdateAsync(timeSlot, ct);
 
-        return ItemApiResult<AppointmentTimeSlotDto>.Succeeded(dto with { Id = id });
+        return ItemApiResult<AppointmentTimeSlotDto>.Succeeded(MapToDto(result));
     }
 
-    public async Task<ApiResult> GetAllAsync()
+    public async Task<ApiResult> GetAllAsync(CancellationToken ct)
     {
-        var result = await _repository.GetAsync(new TimeSlotSearchFilter(Days: null));
+        var result = await _repository.GetAsync(new TimeSlotSearchFilter(Days: null), ct);
 
-        return ItemApiResult<ICollection<AppointmentTimeSlot>>.Succeeded(result);
+        return ItemApiResult<ICollection<AppointmentTimeSlotDto>>.Succeeded(result.Select(MapToDto).ToList());
     }
 
-    public async Task<ApiResult> GetAsync(TimeSlotSearchFilter searchFilter)
+    public async Task<ApiResult> GetAsync(TimeSlotSearchFilter searchFilter, CancellationToken ct)
     {
-        var result = await _repository.GetAsync(searchFilter);
+        var result = await _repository.GetAsync(searchFilter, ct);
 
-        return ItemApiResult<ICollection<AppointmentTimeSlot>>.Succeeded(result);
+        return ItemApiResult<ICollection<AppointmentTimeSlotDto>>.Succeeded(result.Select(MapToDto).ToList());
     }
 
-    public async Task<ApiResult> DeleteAsync(Guid id)
+    public async Task<ApiResult> DeleteAsync(Guid id, CancellationToken ct)
     {
-        var timeSlot = await _repository.GetByIdAsync(id);
+        var timeSlot = await _repository.GetByIdAsync(id, ct);
 
         if (timeSlot is null)
             return ApiResult.NotFound();
         
-        await _repository.DeleteAsync(timeSlot);
+        await _repository.DeleteAsync(timeSlot, ct);
         
         return ApiResult.Succeeded();
     }
@@ -87,12 +97,15 @@ public class AppointmentTimeSlotService
         foreach (var timeSlot in timeSlots.Where(slot => slot.Id != id))
         {
             if (dto.From < timeSlot.To && dto.To > timeSlot.From)
-            {
                 errors.Add(
                     $"Overlapping time {timeSlot.Day.ToString()}:{timeSlot.From}-{timeSlot.To}");
-            }
         }
 
         return errors;
+    }
+
+    private static AppointmentTimeSlotDto MapToDto(AppointmentTimeSlot timeSlot)
+    {
+        return new AppointmentTimeSlotDto(timeSlot.Id, timeSlot.Day, timeSlot.From, timeSlot.To);
     }
 }

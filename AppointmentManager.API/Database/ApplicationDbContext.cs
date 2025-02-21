@@ -63,6 +63,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<AppointmentTimeSlot>(builder =>
         {
             builder.HasKey(slot => slot.Id);
+            builder.Property(slot => slot.Day).HasConversion<string>();
         });
     }
 }

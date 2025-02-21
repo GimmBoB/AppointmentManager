@@ -1,12 +1,11 @@
-﻿
-// TODO bitches müssen Foto hochladen
-namespace AppointmentManager.API.Models;
+﻿namespace AppointmentManager.API.Models;
 
 public record AppointmentDto(
         Guid Id,
+        Guid CategoryId,
         string Name,
         string Email,
-        string ExtraWishes,
+        string? ExtraWishes,
         DateTime From,
         DateTime To,
-        AppointmentStatus Status);
+        AppointmentStatus Status) : IEntityDto;

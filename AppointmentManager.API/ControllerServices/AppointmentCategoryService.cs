@@ -12,9 +12,19 @@ public class AppointmentCategoryService
         _repository = repository;
     }
 
-    public async Task<ApiResult> AddAsync(CategoryDto dto)
+    public async Task<ApiResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        var categories = await _repository.GetAsync(new CategorySearchFilter(dto.Name));
+        var category = await _repository.GetByIdAsync(id, ct);
+
+        if (category is null)
+            return ApiResult.NotFound();
+
+        return ItemApiResult<CategoryDto>.Succeeded(MapToDto(category));
+    }
+
+    public async Task<ApiResult> AddAsync(CategoryDto dto, CancellationToken ct)
+    {
+        var categories = await _repository.GetAsync(new CategorySearchFilter(dto.Name), ct);
         
         var errors = Validate(Guid.Empty, dto, categories);
 
@@ -22,19 +32,19 @@ public class AppointmentCategoryService
             return ApiResult.Failure(errors);
 
         var category = await _repository.AddAsync(new AppointmentCategory
-            { Name = dto.Name, Description = dto.Description });
+            { Name = dto.Name, Description = dto.Description }, ct);
 
-        return ItemApiResult<CategoryDto>.Succeeded(dto with { Id = category.Id });
+        return ItemApiResult<CategoryDto>.Created(MapToDto(category));
     }
 
-    public async Task<ApiResult> UpdateAsync(Guid id, CategoryDto dto)
+    public async Task<ApiResult> UpdateAsync(Guid id, CategoryDto dto, CancellationToken ct)
     {
-        var category = await _repository.GetByIdAsync(id);
+        var category = await _repository.GetByIdAsync(id, ct);
 
         if (category is null)
             return ApiResult.NotFound();
 
-        var categories = await _repository.GetAsync(new CategorySearchFilter(dto.Name));
+        var categories = await _repository.GetAsync(new CategorySearchFilter(dto.Name), ct);
         
         var errors = Validate(id, dto, categories);
 
@@ -44,26 +54,26 @@ public class AppointmentCategoryService
         category.Name = dto.Name;
         category.Description = dto.Description;
 
-        await _repository.UpdateAsync(category);
+        var result = await _repository.UpdateAsync(category, ct);
 
-        return ItemApiResult<CategoryDto>.Succeeded(dto with { Id = id });
+        return ItemApiResult<CategoryDto>.Succeeded(MapToDto(result));
     }
 
-    public async Task<ApiResult> GetAllAsync()
+    public async Task<ApiResult> GetAllAsync(CancellationToken ct)
     {
-        var result = await _repository.GetAsync(new CategorySearchFilter(null));
+        var result = await _repository.GetAsync(new CategorySearchFilter(null), ct);
 
-        return ItemApiResult<ICollection<AppointmentCategory>>.Succeeded(result);
+        return ItemApiResult<ICollection<CategoryDto>>.Succeeded(result.Select(MapToDto).ToList());
     }
 
-    public async Task<ApiResult> DeleteAsync(Guid id)
+    public async Task<ApiResult> DeleteAsync(Guid id, CancellationToken ct)
     {
-        var category = await _repository.GetByIdAsync(id);
+        var category = await _repository.GetByIdAsync(id, ct);
 
         if (category is null)
             return ApiResult.NotFound();
         
-        await _repository.DeleteAsync(category);
+        await _repository.DeleteAsync(category, ct);
         
         return ApiResult.Succeeded();
     }
@@ -76,5 +86,10 @@ public class AppointmentCategoryService
             errors.Add($"There is already a category with the name '{dto.Name}'");
         
         return errors;
+    }
+    
+    private static CategoryDto MapToDto(AppointmentCategory category)
+    {
+        return new CategoryDto(category.Id, category.Name, category.Description);
     }
 }

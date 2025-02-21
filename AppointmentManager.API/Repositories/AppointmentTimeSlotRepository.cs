@@ -12,23 +12,23 @@ public class AppointmentTimeSlotRepository
         _dbContext = dbContext;
     }
 
-    public async Task<AppointmentTimeSlot> AddAsync(AppointmentTimeSlot timeSlot)
+    public async Task<AppointmentTimeSlot> AddAsync(AppointmentTimeSlot timeSlot, CancellationToken ct)
     {
-        var result = (await _dbContext.AppointmentTimeSlots.AddAsync(timeSlot)).Entity;
-        await _dbContext.SaveChangesAsync();
+        var result = (await _dbContext.AppointmentTimeSlots.AddAsync(timeSlot, ct)).Entity;
+        await _dbContext.SaveChangesAsync(ct);
 
         return result;
     }
 
-    public async Task<AppointmentTimeSlot> UpdateAsync(AppointmentTimeSlot timeSlot)
+    public async Task<AppointmentTimeSlot> UpdateAsync(AppointmentTimeSlot timeSlot, CancellationToken ct)
     {
         var result = _dbContext.AppointmentTimeSlots.Update(timeSlot).Entity;
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(ct);
 
         return result;
     }
 
-    public Task<List<AppointmentTimeSlot>> GetAsync(TimeSlotSearchFilter searchFilter)
+    public Task<List<AppointmentTimeSlot>> GetAsync(TimeSlotSearchFilter searchFilter, CancellationToken _)
     {
         var query = _dbContext.AppointmentTimeSlots.AsQueryable();
 
@@ -40,12 +40,13 @@ public class AppointmentTimeSlotRepository
         return Task.FromResult(result);
     }
 
-    public async Task<AppointmentTimeSlot?> GetByIdAsync(Guid id) => await _dbContext.AppointmentTimeSlots.FindAsync(id);
+    public async Task<AppointmentTimeSlot?> GetByIdAsync(Guid id, CancellationToken ct) =>
+        await _dbContext.AppointmentTimeSlots.FindAsync(new object?[] { id }, cancellationToken: ct);
 
-    public async Task DeleteAsync(AppointmentTimeSlot timeSlot)
+    public async Task DeleteAsync(AppointmentTimeSlot timeSlot, CancellationToken ct)
     {
         _dbContext.AppointmentTimeSlots.Remove(timeSlot);
 
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(ct);
     }
 }

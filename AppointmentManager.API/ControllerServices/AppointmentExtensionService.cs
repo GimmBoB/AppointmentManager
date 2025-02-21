@@ -1,0 +1,75 @@
+﻿using AppointmentManager.API.Models;
+using AppointmentManager.API.Repositories;
+
+namespace AppointmentManager.API.ControllerServices;
+// TODO weitermachen
+public class AppointmentExtensionService
+{
+    private readonly AppointmentExtensionRepository _repository;
+    private readonly AppointmentRepository _appointmentRepository;
+
+    public AppointmentExtensionService(AppointmentExtensionRepository repository, AppointmentRepository appointmentRepository)
+    {
+        _repository = repository;
+        _appointmentRepository = appointmentRepository;
+    }
+
+    public async Task<ApiResult> AddAsync(Guid appointmentId, IFormFile file, CancellationToken ct)
+    {
+        var appointment = await _appointmentRepository.GetByIdAsync(appointmentId, ct);
+        if (appointment is null)
+            return ApiResult.NotFound();
+
+        var path = GetOrCreateAppointmentImagesFolderPath();
+        var explicitImagePath = GetOrCreateAppointmentImagePath(path, appointment);
+
+        var filePath = await SaveFileAsync(file, explicitImagePath);
+
+        await _repository.AddAsync(new AppointmentExtension { AppointmentId = appointmentId, FilePath = filePath }, ct);
+        
+        return ApiResult.Succeeded();
+    }
+
+    private static string GetOrCreateAppointmentImagesFolderPath()
+    {
+        var assemblyFolderPath = GetAssemblyFolderPath();
+        var dataFolderPath = Path.Combine(assemblyFolderPath, "Data");
+        var assetsFolderPath = Path.Combine(dataFolderPath, "Assets");
+        var projectImagesFolderPath = Path.Combine(assetsFolderPath, "AppointmentImages");
+        
+        var directoryInfo = new DirectoryInfo(projectImagesFolderPath);
+        if (!directoryInfo.Exists)
+            Directory.CreateDirectory(projectImagesFolderPath);
+
+        return projectImagesFolderPath;
+    }
+
+    private static string GetOrCreateAppointmentImagePath(string path, Appointment appointment)
+    {
+        var appointmentPath = Path.Combine(path, appointment.Id.ToString("N"));
+        
+        var directoryInfo = new DirectoryInfo(appointmentPath);
+        if (!directoryInfo.Exists)
+            Directory.CreateDirectory(appointmentPath);
+
+        return appointmentPath;
+    }
+
+    private static string GetAssemblyFolderPath()
+    {
+        var appInfo = new AppInfo();
+        var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+        var assemblyFolderPath = Path.GetDirectoryName(assemblyPath) ?? appInfo.ApplicationFolder;
+
+        return assemblyFolderPath;
+    }
+
+    private static async Task<string> SaveFileAsync(IFormFile file, string explicitImagePath)
+    {
+        var filePath = Path.Combine(explicitImagePath, file.FileName);
+        await using Stream fileStream = new FileStream(filePath, FileMode.Create);
+        await file.CopyToAsync(fileStream);
+
+        return filePath;
+    }
+}

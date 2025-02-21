@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManager.API.Controllers;
@@ -7,6 +8,7 @@ namespace AppointmentManager.API.Controllers;
 [Route("[controller]")]
 public abstract class ApplicationControllerBase : ControllerBase
 {
+    // TODO Fotos hochladen; Authentication; Emails verschicken
     protected async Task<ActionResult> GetResultAsync<T>(Func<Task<ApiResult>> func)
         where T : class
     {
@@ -26,7 +28,9 @@ public abstract class ApplicationControllerBase : ControllerBase
         {
             if (apiResult is ItemApiResult<T> itemResult)
             {
-                return Ok(itemResult.Item);
+                return itemResult.Added
+                    ? Created(BuildCreateUri(itemResult.Id.Value), itemResult.Item)
+                    : Ok(itemResult.Item);
             }
 
             return Ok();
@@ -36,5 +40,12 @@ public abstract class ApplicationControllerBase : ControllerBase
             return BadRequest(apiResult.Errors);
         
         return NotFound();
+    }
+    
+    private string BuildCreateUri(Guid id)
+    {
+        var uriBuilder = new UriBuilder(Request.GetDisplayUrl());
+        uriBuilder.Path += $"/{id}";
+        return uriBuilder.Uri.ToString();
     }
 }

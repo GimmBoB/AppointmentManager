@@ -15,8 +15,10 @@ public class AdminController : ApplicationControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public Task<ActionResult> GetByIdAsync([Required] Guid id) => GetResultAsync<AdminDto>(() => _adminService.GetByIdAsync(id));
+    public Task<ActionResult> GetByIdAsync([Required] Guid id, CancellationToken ct) =>
+        GetResultAsync<AdminDto>(() => _adminService.GetByIdAsync(id, ct));
 
     [HttpPut("{id:guid}")]
-    public Task<ActionResult> UpdateAsync([Required] Guid id, AdminDto dto) => GetResultAsync<AdminDto>(() => _adminService.UpdateAsync(id, dto));
+    public Task<ActionResult> UpdateAsync([Required] Guid id, AdminDto dto, CancellationToken ct) =>
+        GetResultAsync<AdminDto>(() => _adminService.UpdateAsync(id, dto, ct));
 }

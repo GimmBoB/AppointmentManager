@@ -12,13 +12,13 @@ public class AdminRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Admin> UpdateAsync(Admin admin)
+    public async Task<Admin> UpdateAsync(Admin admin, CancellationToken ct)
     {
         var result = _dbContext.Admins.Update(admin).Entity;
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(ct);
 
         return result;
     }
 
-    public async Task<Admin?> GetByIdAsync(Guid id) => await _dbContext.Admins.FindAsync(id);
+    public async Task<Admin?> GetByIdAsync(Guid id, CancellationToken ct) => await _dbContext.Admins.FindAsync(new object?[] { id }, cancellationToken: ct);
 }

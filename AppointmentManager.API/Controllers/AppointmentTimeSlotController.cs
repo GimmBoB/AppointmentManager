@@ -6,30 +6,34 @@ namespace AppointmentManager.API.Controllers;
 
 public class AppointmentTimeSlotController : ApplicationControllerBase
 {
-    private readonly AppointmentTimeSlotService _timeSlotService;
+    private readonly AppointmentTimeSlotService _service;
 
-    public AppointmentTimeSlotController(AppointmentTimeSlotService timeSlotService)
+    public AppointmentTimeSlotController(AppointmentTimeSlotService service)
     {
-        _timeSlotService = timeSlotService;
+        _service = service;
     }
 
+    [HttpGet("{id:guid}")]
+    public Task<ActionResult> GetByIdAsync(Guid id, CancellationToken ct) =>
+        GetResultAsync<AppointmentTimeSlotDto>(() => _service.GetByIdAsync(id, ct));
+    
     [HttpGet("all")]
-    public Task<ActionResult> GetAllAsync() =>
-        GetResultAsync<ICollection<AppointmentTimeSlot>>(() => _timeSlotService.GetAllAsync());
+    public Task<ActionResult> GetAllAsync(CancellationToken ct) =>
+        GetResultAsync<ICollection<AppointmentTimeSlotDto>>(() => _service.GetAllAsync(ct));
 
     [HttpPost("search")]
-    public Task<ActionResult> GetAsync(TimeSlotSearchFilter searchFilter) =>
-        GetResultAsync<ICollection<AppointmentTimeSlot>>(() => _timeSlotService.GetAsync(searchFilter));
+    public Task<ActionResult> GetAsync(TimeSlotSearchFilter searchFilter, CancellationToken ct) =>
+        GetResultAsync<ICollection<AppointmentTimeSlotDto>>(() => _service.GetAsync(searchFilter, ct));
 
     [HttpPost]
-    public Task<ActionResult> AddAsync(AppointmentTimeSlotDto dto) =>
-        GetResultAsync<AppointmentTimeSlotDto>(() => _timeSlotService.AddAsync(dto));
+    public Task<ActionResult> AddAsync(AppointmentTimeSlotDto dto, CancellationToken ct) =>
+        GetResultAsync<AppointmentTimeSlotDto>(() => _service.AddAsync(dto, ct));
 
     [HttpPut("{id:guid}")]
-    public Task<ActionResult> UpdateAsync(Guid id, AppointmentTimeSlotDto dto) =>
-        GetResultAsync<AppointmentTimeSlotDto>(() => _timeSlotService.UpdateAsync(id, dto));
+    public Task<ActionResult> UpdateAsync(Guid id, AppointmentTimeSlotDto dto, CancellationToken ct) =>
+        GetResultAsync<AppointmentTimeSlotDto>(() => _service.UpdateAsync(id, dto, ct));
 
     [HttpDelete("{id:guid}")]
-    public Task<ActionResult> DeleteAsync(Guid id) =>
-        GetResultAsync<AppointmentTimeSlotDto>(() => _timeSlotService.DeleteAsync(id));
+    public Task<ActionResult> DeleteAsync(Guid id, CancellationToken ct) =>
+        GetResultAsync<AppointmentTimeSlotDto>(() => _service.DeleteAsync(id,ct));
 }

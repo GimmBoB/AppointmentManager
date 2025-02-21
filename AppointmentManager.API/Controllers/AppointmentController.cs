@@ -1,30 +1,32 @@
-﻿using AppointmentManager.API.Models;
+﻿using AppointmentManager.API.ControllerServices;
+using AppointmentManager.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManager.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AppointmentController: ControllerBase
+public class AppointmentController: ApplicationControllerBase
 {
-    private static readonly IDictionary<string, AppointmentDto> Cache = new Dictionary<string, AppointmentDto>();
+    private readonly AppointmentService _service;
+    public AppointmentController(AppointmentService service)
+    {
+        _service = service;
+    }
 
-    public AppointmentController()
-    { }
-    
+    [HttpGet("{id:guid}")]
+    public Task<ActionResult> GetByIdAsync(Guid id, CancellationToken ct) =>
+        GetResultAsync<AppointmentDto>(() => _service.GetByIdAsync(id, ct));
+
     [HttpPost]
-    public async Task<ActionResult> AddAsync(AppointmentDto appointment)
-    {
-        Cache.TryAdd(appointment.Name, appointment);
+    public Task<ActionResult> AddAsync(AppointmentDto dto, CancellationToken ct) =>
+        GetResultAsync<AppointmentDto>(() => _service.AddAsync(dto, ct));
 
-        return Ok();
-    }
+    [HttpPost("search")]
+    public Task<ActionResult> GetAsync(AppointmentSearchFilter searchFilter, CancellationToken ct) =>
+        GetResultAsync<ICollection<AppointmentDto>>(() => _service.GetAsync(searchFilter, ct));
 
-    [HttpGet]
-    public async Task<ActionResult<ICollection<AppointmentDto>>> GetAsync()
-    {
-        var result = Cache.Values;
-
-        return Ok(result);
-    }
+    [HttpPut("{id:guid}")]
+    public Task<ActionResult> UpdateAsync(Guid id, AppointmentDto dto, CancellationToken ct) =>
+        GetResultAsync<AppointmentDto>(() => _service.UpdateAsync(id, dto, ct));
 }

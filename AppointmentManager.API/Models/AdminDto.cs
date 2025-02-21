@@ -1,3 +1,6 @@
 ﻿namespace AppointmentManager.API.Models;
 
-public record AdminDto(Guid Id, string Name, string Email);
+public record AdminDto(
+    Guid Id,
+    string Name,
+    string Email) : IEntityDto;

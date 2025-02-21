@@ -2,6 +2,6 @@
 
 public record AppointmentTimeSlotDto(
     Guid Id,
-    Days Day,
+    DayOfWeek Day,
     TimeSpan From,
-    TimeSpan To);
+    TimeSpan To) : IEntityDto;

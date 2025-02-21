@@ -17,19 +17,19 @@ public class AdminService
         _configuration = configuration;
     }
 
-    public async Task<ApiResult> GetByIdAsync(Guid id)
+    public async Task<ApiResult> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        var admin = await _repository.GetByIdAsync(id);
+        var admin = await _repository.GetByIdAsync(id, ct);
 
         if (admin is null)
             return ApiResult.NotFound();
 
-        return ItemApiResult<AdminDto>.Succeeded(new AdminDto(id, admin.Name!, admin.Email!));
+        return ItemApiResult<AdminDto>.Succeeded(MapToDto(admin));
     }
 
-    public async Task<ApiResult> UpdateAsync(Guid id, AdminDto dto)
+    public async Task<ApiResult> UpdateAsync(Guid id, AdminDto dto, CancellationToken ct)
     {
-        var admin = await _repository.GetByIdAsync(id);
+        var admin = await _repository.GetByIdAsync(id, ct);
 
         if (admin is null)
             return ApiResult.NotFound();
@@ -42,14 +42,14 @@ public class AdminService
         admin.Name = dto.Name.Trim();
         admin.Email = dto.Email.Trim();
 
-        await _repository.UpdateAsync(admin);
+        var result = await _repository.UpdateAsync(admin, ct);
 
-        return ItemApiResult<AdminDto>.Succeeded(dto with { Id = id });
+        return ItemApiResult<AdminDto>.Succeeded(MapToDto(result));
     }
 
-    public async Task<ApiResult> UpdatePasswordAsync(Guid id, string password)
+    public async Task<ApiResult> UpdatePasswordAsync(Guid id, string password, CancellationToken ct)
     {
-        var admin = await _repository.GetByIdAsync(id);
+        var admin = await _repository.GetByIdAsync(id, ct);
 
         if (admin is null)
             return ApiResult.NotFound();
@@ -60,7 +60,7 @@ public class AdminService
         var encrypt = StringCipher.Encrypt(password, _configuration.SecretKey);
         admin.Password = encrypt;
 
-        await _repository.UpdateAsync(admin);
+        await _repository.UpdateAsync(admin, ct);
 
         return ApiResult.Succeeded();
     }
@@ -75,5 +75,10 @@ public class AdminService
             errors.Add($"{nameof(dto.Name)} can not be empty");
 
         return errors;
+    }
+
+    private static AdminDto MapToDto(Admin admin)
+    {
+        return new AdminDto(admin.Id, admin.Name, admin.Email);
     }
 }

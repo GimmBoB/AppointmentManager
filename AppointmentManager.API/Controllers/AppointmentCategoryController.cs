@@ -6,26 +6,30 @@ namespace AppointmentManager.API.Controllers;
 
 public class AppointmentCategoryController : ApplicationControllerBase
 {
-    private readonly AppointmentCategoryService _appointmentCategoryService;
+    private readonly AppointmentCategoryService _service;
 
-    public AppointmentCategoryController(AppointmentCategoryService appointmentCategoryService)
+    public AppointmentCategoryController(AppointmentCategoryService service)
     {
-        _appointmentCategoryService = appointmentCategoryService;
+        _service = service;
     }
 
+    [HttpGet("{id:guid}")]
+    public Task<ActionResult> GetByIdAsync(Guid id, CancellationToken ct) =>
+        GetResultAsync<CategoryDto>(() => _service.GetByIdAsync(id, ct));
+    
     [HttpGet("all")]
-    public Task<ActionResult> GetAllAsync() =>
-        GetResultAsync<ICollection<AppointmentCategory>>(() => _appointmentCategoryService.GetAllAsync());
+    public Task<ActionResult> GetAllAsync(CancellationToken ct) =>
+        GetResultAsync<ICollection<CategoryDto>>(() => _service.GetAllAsync(ct));
 
     [HttpPost]
-    public Task<ActionResult> AddAsync(CategoryDto dto) =>
-        GetResultAsync<CategoryDto>(() => _appointmentCategoryService.AddAsync(dto));
+    public Task<ActionResult> AddAsync(CategoryDto dto, CancellationToken ct) =>
+        GetResultAsync<CategoryDto>(() => _service.AddAsync(dto, ct));
 
     [HttpPut("{id:guid}")]
-    public Task<ActionResult> UpdateAsync(Guid id, CategoryDto dto) =>
-        GetResultAsync<CategoryDto>(() => _appointmentCategoryService.UpdateAsync(id, dto));
+    public Task<ActionResult> UpdateAsync(Guid id, CategoryDto dto, CancellationToken ct) =>
+        GetResultAsync<CategoryDto>(() => _service.UpdateAsync(id, dto, ct));
 
     [HttpDelete("{id:guid}")]
-    public Task<ActionResult> DeleteAsync(Guid id) =>
-        GetResultAsync<CategoryDto>(() => _appointmentCategoryService.DeleteAsync(id));
+    public Task<ActionResult> DeleteAsync(Guid id, CancellationToken ct) =>
+        GetResultAsync<CategoryDto>(() => _service.DeleteAsync(id, ct));
 }

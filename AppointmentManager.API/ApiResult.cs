@@ -12,7 +12,7 @@ public class ApiResult
     {
         Success = success;
     }
-    
+
     public bool Success { get; }
 
     public List<string> Errors { get; } = new();
