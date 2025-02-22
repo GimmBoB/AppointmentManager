@@ -17,7 +17,7 @@ public static class SeedDatabase
         var admins = new List<Admin>();
         foreach (var admin in adminConfiguration.Admins)
         {
-            var exists = context.Admins.Any(a => a.Id == admin.Id);
+            var exists = context.Admins.Any(a => a.Email.Trim().ToLower() == admin.Email.Trim().ToLower());
 
             if (!exists)
             {
@@ -34,9 +34,9 @@ public static class SeedDatabase
                     Email = admin.Email,
                     Password = StringCipher.Encrypt(admin.Password, adminConfiguration.SecretKey)
                 });
+
             }
         }
-
         context.Admins.AddRange(admins);
         await context.SaveChangesAsync();
     }

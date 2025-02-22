@@ -1,4 +1,6 @@
 ﻿using AppointmentManager.API.ControllerServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManager.API.Controllers;
@@ -16,6 +18,7 @@ public class AppointmentExtensionController : ApplicationControllerBase
     public Task AddFileAsync(Guid appointId, [FromForm] IFormFile file, CancellationToken ct) =>
         GetResultAsync(() => _service.AddFileAsync(appointId, file, ct));
 
+    [Authorize]
     [HttpGet("{id:guid}/image")]
     public async Task<ActionResult> GetFileAsync(Guid id, CancellationToken ct)
     {

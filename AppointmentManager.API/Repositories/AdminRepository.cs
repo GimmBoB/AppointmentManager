@@ -20,5 +20,9 @@ public class AdminRepository
         return result;
     }
 
-    public async Task<Admin?> GetByIdAsync(Guid id, CancellationToken ct) => await _dbContext.Admins.FindAsync(new object?[] { id }, cancellationToken: ct);
+    public async Task<Admin?> GetByIdAsync(Guid id, CancellationToken ct) =>
+        await _dbContext.Admins.FindAsync(new object?[] { id }, cancellationToken: ct);
+
+    public Task<Admin?> GetByEmailAsync(string email, CancellationToken _) =>
+        Task.FromResult(_dbContext.Admins.SingleOrDefault(a => a.Email.Trim().ToLower() == email.Trim().ToLower()));
 }

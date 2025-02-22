@@ -1,7 +1,13 @@
+using System.Security.Claims;
+using AppointmentManager.API;
 using AppointmentManager.API.Database;
 using AppointmentManager.API.Extensions;
 using AppointmentManager.API.QuartzJobs;
 using AppointmentManager.API.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
 using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +17,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddAppointmentManagerServices(builder.Configuration);
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<BearerAuthOperationFilter>();
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme.",
+        In = ParameterLocation.Header,
+        Name = HeaderNames.Authorization,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+});builder.Services.AddAppointmentManagerServices(builder.Configuration);
 
 builder.Services.AddQuartz(options =>
 {
@@ -22,6 +39,21 @@ builder.Services.AddQuartz(options =>
     options.AddJobAndTrigger<EnsureValidCertificateJob>(builder.Configuration);
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.AddScheme(JwtBearerDefaults.AuthenticationScheme, x => x.HandlerType = typeof(BearerTokenHandler));
+});
+        
+builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+        .RequireClaim(ClaimTypes.NameIdentifier)
+        .RequireClaim(ClaimTypes.Email)
+        .RequireClaim(ClaimTypes.Name)
+        .RequireClaim(ClaimTypes.Sid)
+        .Build();
+});
 
 
 var app = builder.Build();
@@ -35,6 +67,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

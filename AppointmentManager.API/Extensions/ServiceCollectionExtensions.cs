@@ -17,16 +17,19 @@ public static class ServiceCollectionExtensions
         var adminConfig = new AdminConfiguration();
         var certificateConfig = new CertificateConfig();
         var quartsConfig = new QuartsConfig();
+        var tokenValidationConfig = new TokenValidationConfig();
         
         configuration.GetSection(nameof(DatabaseConfiguration)).Bind(dbConfig);
         configuration.GetSection(nameof(AdminConfiguration)).Bind(adminConfig);
         configuration.GetSection(nameof(CertificateConfig)).Bind(certificateConfig);
         configuration.GetSection(nameof(QuartsConfig)).Bind(quartsConfig);
+        configuration.GetSection(nameof(tokenValidationConfig)).Bind(tokenValidationConfig);
 
         services.AddSingleton(dbConfig);
         services.AddSingleton(adminConfig);
         services.AddSingleton(certificateConfig);
         services.AddSingleton(quartsConfig);
+        services.AddSingleton(tokenValidationConfig);
 
         services.AddScoped<AdminService>();
         services.AddScoped<AdminRepository>();
@@ -43,7 +46,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AppointmentExtensionService>();
         services.AddScoped<AppointmentExtensionRepository>();
 
+        services.AddScoped<AuthenticationService>();
+
         services.AddSingleton<CertificateProvider>();
+        services.AddScoped<BearerTokenAuthenticator>();
+        services.AddScoped<JwtValidator>();
         
         return services;
     }
