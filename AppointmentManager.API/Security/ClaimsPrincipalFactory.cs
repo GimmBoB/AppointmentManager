@@ -22,8 +22,7 @@ public static class ClaimsPrincipalFactory
         {
             new(ClaimTypes.Name, admin.Name),
             new(ClaimTypes.NameIdentifier, admin.Id.ToString("D")),
-            new(ClaimTypes.Email, admin.Email),
-            new(ClaimTypes.Sid, Guid.NewGuid().ToString("D"))
+            new(ClaimTypes.Email, admin.Email)
         };
 
         return claims;

@@ -51,7 +51,6 @@ builder.Services.AddAuthorization(options =>
         .RequireClaim(ClaimTypes.NameIdentifier)
         .RequireClaim(ClaimTypes.Email)
         .RequireClaim(ClaimTypes.Name)
-        .RequireClaim(ClaimTypes.Sid)
         .Build();
 });
 
