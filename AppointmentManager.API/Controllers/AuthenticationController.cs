@@ -16,4 +16,8 @@ public class AuthenticationController : ApplicationControllerBase
     [HttpPost("login")]
     public Task<ActionResult> LoginAsync(LoginDto dto, CancellationToken ct) =>
         GetResultAsync<TokenDto>(() => _service.LoginAsync(dto, ct));
+    
+    [HttpPost("refresh")]
+    public Task<ActionResult> RefreshAsync(RefreshDto dto, CancellationToken ct) =>
+        GetResultAsync<TokenDto>(() => _service.RefreshAsync(dto, ct));
 }

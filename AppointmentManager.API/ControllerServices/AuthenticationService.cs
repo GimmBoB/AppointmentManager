@@ -14,13 +14,15 @@ public class AuthenticationService
     private readonly AdminConfiguration _adminConfiguration;
     private readonly TokenValidationConfig _tokenValidationConfig;
     private readonly CertificateProvider _certificateProvider;
+    private readonly BearerTokenAuthenticator _bearerTokenAuthenticator;
 
-    public AuthenticationService(AdminRepository adminRepository, AdminConfiguration adminConfiguration, TokenValidationConfig tokenValidationConfig, CertificateProvider certificateProvider)
+    public AuthenticationService(AdminRepository adminRepository, AdminConfiguration adminConfiguration, TokenValidationConfig tokenValidationConfig, CertificateProvider certificateProvider, BearerTokenAuthenticator bearerTokenAuthenticator)
     {
         _adminRepository = adminRepository;
         _adminConfiguration = adminConfiguration;
         _tokenValidationConfig = tokenValidationConfig;
         _certificateProvider = certificateProvider;
+        _bearerTokenAuthenticator = bearerTokenAuthenticator;
     }
 
     public async Task<ApiResult> LoginAsync(LoginDto dto, CancellationToken ct)
@@ -35,6 +37,18 @@ public class AuthenticationService
 
         var token = CreateToken(admin);
 
+        return ItemApiResult<TokenDto>.Succeeded(token);
+    }
+
+    public async Task<ApiResult> RefreshAsync(RefreshDto dto, CancellationToken ct)
+    {
+        var tokenResult = await _bearerTokenAuthenticator.GetTokenResultAsync(dto.RefreshToken, ct, "refresh");
+
+        if (!tokenResult.IsValid)
+            return ApiResult.Failure(new[] { "Invalid refresh token" });
+
+        var token = CreateToken(tokenResult.Admin);
+        
         return ItemApiResult<TokenDto>.Succeeded(token);
     }
 
@@ -86,6 +100,7 @@ public class AuthenticationService
         var encodedAccessToken = jwtSecurityTokenHandler.WriteToken(accessToken);
         var encodedRefreshToken = jwtSecurityTokenHandler.WriteToken(refreshToken);
 
-        return new TokenDto(encodedAccessToken, encodedRefreshToken);
+        return new TokenDto(encodedAccessToken, encodedRefreshToken, accessToken.ValidTo, refreshToken.ValidTo,
+            accessLifetimeInSeconds, refreshLifetimeInSeconds);
     }
 }

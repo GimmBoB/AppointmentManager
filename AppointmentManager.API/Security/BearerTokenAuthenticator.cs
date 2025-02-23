@@ -14,20 +14,20 @@ public class BearerTokenAuthenticator
         _jwtValidator = jwtValidator;
     }
 
-    public async Task<TokenResult> GetTokenResultAsync(string token, CancellationToken ct)
+    public async Task<TokenResult> GetTokenResultAsync(string token, CancellationToken ct, string expectedTokenType = "access")
     {
         var jwt = new JsonWebToken(token);
-        var isValid = _jwtValidator.IsTokenValid(jwt);
+        var isValid = _jwtValidator.IsTokenValid(jwt, expectedTokenType);
         if (!isValid)
             return TokenResult.InValid();
 
         var idAsString = jwt.TryGetClaim("Id", out var idClaim) ? idClaim.Value : string.Empty;
         var id = Guid.TryParse(idAsString, out var parsedId) ? parsedId : Guid.Empty;
 
-        var user =  await _adminRepository.GetByIdAsync(id, ct);
+        var admin =  await _adminRepository.GetByIdAsync(id, ct);
 
-        return user is not null 
-            ? TokenResult.Valid(user)
+        return admin is not null 
+            ? TokenResult.Valid(admin)
             : TokenResult.InValid();
     }
 }

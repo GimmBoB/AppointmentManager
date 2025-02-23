@@ -20,7 +20,7 @@ public class JwtValidator
         _certificateProvider = certificateProvider;
     }
 
-    public bool IsTokenValid(JsonWebToken jwt)
+    public bool IsTokenValid(JsonWebToken jwt, string expectedTokenType)
     {
         var utcNow = DateTime.UtcNow;
 
@@ -35,7 +35,7 @@ public class JwtValidator
             return false;
 
         var tokenType = jwt.TryGetClaim("TokenType", out var tokenTypeClaim) ? tokenTypeClaim.Value : null;
-        if (string.IsNullOrWhiteSpace(tokenType) || tokenType != "access")
+        if (string.IsNullOrWhiteSpace(tokenType) || tokenType != expectedTokenType)
             return false;
 
         var certs = _certificateProvider.LoadCollection();
