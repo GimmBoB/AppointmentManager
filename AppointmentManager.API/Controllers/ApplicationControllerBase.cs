@@ -8,7 +8,6 @@ namespace AppointmentManager.API.Controllers;
 [Route("[controller]")]
 public abstract class ApplicationControllerBase : ControllerBase
 {
-    // TODO Fotos hochladen; Authentication; Emails verschicken
     protected async Task<ActionResult> GetResultAsync<T>(Func<Task<ApiResult>> func)
         where T : class
     {

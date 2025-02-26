@@ -29,7 +29,9 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "bearer",
         BearerFormat = "JWT"
     });
-});builder.Services.AddAppointmentManagerServices(builder.Configuration);
+});
+
+builder.Services.AddAppointmentManagerServices(builder.Configuration);
 
 builder.Services.AddQuartz(options =>
 {

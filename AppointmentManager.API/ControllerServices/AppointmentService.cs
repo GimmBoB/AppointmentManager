@@ -1,4 +1,5 @@
-﻿using AppointmentManager.API.Models;
+﻿using AppointmentManager.API.Email;
+using AppointmentManager.API.Models;
 using AppointmentManager.API.Repositories;
 using AppointmentManager.API.Utilities;
 
@@ -9,12 +10,18 @@ public class AppointmentService
     private readonly AppointmentRepository _repository;
     private readonly AppointmentTimeSlotRepository _timeSlotRepository;
     private readonly AppointmentCategoryRepository _categoryRepository;
+    private readonly MailService _mailService;
 
-    public AppointmentService(AppointmentRepository repository, AppointmentTimeSlotRepository timeSlotRepository, AppointmentCategoryRepository categoryRepository)
+    public AppointmentService(
+        AppointmentRepository repository,
+        AppointmentTimeSlotRepository timeSlotRepository,
+        AppointmentCategoryRepository categoryRepository,
+        MailService mailService)
     {
         _repository = repository;
         _timeSlotRepository = timeSlotRepository;
         _categoryRepository = categoryRepository;
+        _mailService = mailService;
     }
 
     public async Task<ApiResult> GetByIdAsync(Guid id, CancellationToken ct)
@@ -49,6 +56,9 @@ public class AppointmentService
             Status = AppointmentStatus.Requested
         }, ct);
 
+        // TODO use templates and send to Admin and Mail Address from Appointment
+        _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
+        
         return ItemApiResult<AppointmentDto>.Created(MapToDto(result));
     }
 
@@ -72,6 +82,9 @@ public class AppointmentService
 
         var result = await _repository.UpdateAsync(appointment, ct);
 
+        // TODO use templates and send to Admin and Mail Address from Appointment
+        _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
+        
         return ItemApiResult<AppointmentDto>.Succeeded(MapToDto(result));
     }
 

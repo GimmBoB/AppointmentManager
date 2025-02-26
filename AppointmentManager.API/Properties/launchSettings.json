@@ -25,13 +25,14 @@
         "AdminConfiguration__Admins__1__Email": "rent.your.engineer@gmail.com",
         "AdminConfiguration__Admins__1__Password": "B<1gWUzLlvX3",
         "AdminConfiguration__SecretKey": "LVT3PyA7bXP#3q$YlFj2YOhiu",
-        "SmtpConfig__FromMail": "noreply@rent.your.engineer@gmail.com",
+        "SmtpConfig__FromMail": "noreply@rent.your.engineer.com",
         "SmtpConfig__Host": "smtp.gmail.com",
         "SmtpConfig__UserName": "rent.your.engineer@gmail.com",
-        "SmtpConfig__Password": "12345",
+        "SmtpConfig__Password": "eowhqeiktqrvzaof",
         "SmtpConfig__MailSendRetries": "5",
-        "SmtpConfig__MillisecondsTillRetry": "180000",
-        "SmtpConfig__UseSsl": "true"
+        "SmtpConfig__MillisecondsTillRetry": "5000",
+        "SmtpConfig__UseSsl": "true",
+        "SmtpConfig__AdminMail": "true"
       }
     }
   }
