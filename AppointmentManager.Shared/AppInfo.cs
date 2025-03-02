@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace AppointmentManager.API;
+namespace AppointmentManager.Shared;
 
 public class AppInfo
 {

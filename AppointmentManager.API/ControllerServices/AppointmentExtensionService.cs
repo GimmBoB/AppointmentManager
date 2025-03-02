@@ -1,6 +1,7 @@
 ﻿using AppointmentManager.API.Extensions;
 using AppointmentManager.API.Models;
 using AppointmentManager.API.Repositories;
+using AppointmentManager.Shared;
 
 namespace AppointmentManager.API.ControllerServices;
 public class AppointmentExtensionService
@@ -47,7 +48,7 @@ public class AppointmentExtensionService
 
     private static string GetOrCreateAppointmentImagesFolderPath()
     {
-        var assemblyFolderPath = GetAssemblyFolderPath();
+        var assemblyFolderPath = new AppInfo().GetAssemblyFolderPath();
         var dataFolderPath = Path.Combine(assemblyFolderPath, "Data");
         var assetsFolderPath = Path.Combine(dataFolderPath, "Assets");
         var projectImagesFolderPath = Path.Combine(assetsFolderPath, "AppointmentImages");
@@ -68,15 +69,6 @@ public class AppointmentExtensionService
             Directory.CreateDirectory(appointmentPath);
 
         return appointmentPath;
-    }
-
-    private static string GetAssemblyFolderPath()
-    {
-        var appInfo = new AppInfo();
-        var assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-        var assemblyFolderPath = Path.GetDirectoryName(assemblyPath) ?? appInfo.ApplicationFolder;
-
-        return assemblyFolderPath;
     }
 
     private static async Task<string> SaveFileAsync(IFormFile file, string explicitImagePath)
