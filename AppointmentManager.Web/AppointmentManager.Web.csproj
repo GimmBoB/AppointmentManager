@@ -20,11 +20,28 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+      <PackageReference Include="FluentValidation" Version="11.11.0" />
       <PackageReference Include="MudBlazor" Version="6.21.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\AppointmentManager.Shared\AppointmentManager.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\ValidationError.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ValidationError.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\ValidationError.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ValidationError.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,7 @@
-using AppointmentManager.Web.Data;
+using AppointmentManager.Web.Models;
+using AppointmentManager.Web.Services;
+using AppointmentManager.Web.Validation;
+using Blazored.LocalStorage;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddScoped<ThemeStateProvider>();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddScoped<IBaseValidator<Appointment>, AppointmentValidator>();
 
 var app = builder.Build();
 

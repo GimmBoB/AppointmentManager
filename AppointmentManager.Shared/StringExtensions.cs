@@ -1,4 +1,4 @@
-﻿namespace AppointmentManager.API.Extensions;
+﻿namespace AppointmentManager.Shared;
 
 public static class StringExtensions
 {

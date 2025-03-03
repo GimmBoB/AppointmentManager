@@ -1,0 +1,24 @@
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using MudBlazor;
+
+namespace AppointmentManager.Web.Shared;
+
+public partial class CustomMainContent
+{
+    [Inject] private ISnackbar Snackbar { get; set; }
+    [Parameter] public RenderFragment? Body { get; set; }
+
+    private ErrorBoundary? _errorBoundary;
+    
+    
+    protected override void OnParametersSet()
+    {
+        _errorBoundary?.Recover();
+    }
+
+    private void AddSnackBar(string errorMessage, Severity severity = Severity.Error)
+    {
+        Snackbar.Add(errorMessage, severity);
+    }
+}

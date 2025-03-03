@@ -4,10 +4,39 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudCarousel Class="mud-width-full" @ref="_carousel" ItemsSource="@_source" bind-SelectedIndex="@_selectedIndex" Style="height:200px;" ShowArrows="@(!IsSmartphoneView)" ShowBullets="@true" EnableSwipeGesture="@true" AutoCycle="@true">
+<MudCarousel
+    Class="mud-width-full"
+    @ref="_carousel"
+    ItemsSource="@_source"
+    bind-SelectedIndex="@_selectedIndex"
+    ShowArrows="@(!IsSmartphoneView)"
+    ShowBullets="@true"
+    EnableSwipeGesture="@true"
+    AutoCycle="@true"
+    Style="min-height: 330px !important; min-width: 230px !important;">
     <ItemTemplate>
-        <div class="d-flex flex-column flex-column justify-center" style="height:100%">
-            <MudImage Src="@context" Elevation="25" Class="rounded-lg ma-4" Height="250" Width="250"/>
+        <div class="d-flex flex-grow-1 justify-center">
+            <MudImage
+                Style="width: 245px; height: 345px"
+                Src="@context"
+                Class="rounded-lg"
+                Fluid="@true"
+                ObjectFit="ObjectFit.ScaleDown"
+                Elevation="25"
+                ObjectPosition="ObjectPosition.Bottom"/>
         </div>
     </ItemTemplate>
 </MudCarousel>
+<div style="justify-content: center !important; display: grid !important;">
+    <MudButton Href="@KnownDirections.AppointmentCard"
+               Target="_self"
+               Variant="Variant.Text"
+               EndIcon="@Icons.Custom.Brands.Awesome"
+               StartIcon="@Icons.Custom.Brands.Awesome"
+               Color="Color.Primary"
+               Class="ml-auto"
+               Style="text-transform:none">
+        Make an appointment
+    </MudButton>
+</div>
+    

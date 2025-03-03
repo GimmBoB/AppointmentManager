@@ -2,22 +2,21 @@
 
 <PageTitle>AppointmentManager.Web</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
-
-<MudThemeProvider />
+<MudThemeProvider Theme="ThemeStateProvider.GetCustomTheme()" @ref="@_mudThemeProvider" @bind-IsDarkMode="@ThemeStateProvider.IsDarkMode"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="10">
+        <MudToggleIconButton
+            Size="Size.Medium"
+            ToggledSize="Size.Medium"
+            Icon="@Icons.Material.Filled.DarkMode" Title="Dark-Mode"
+            ToggledIcon="@Icons.Material.Filled.LightMode" ToggledTitle="Light-Mode"
+            ToggledChanged="@OnToggledChanged" Toggled="@ThemeStateProvider.IsDarkMode"/>
+    </MudAppBar>
+    <MudText >Geil</MudText>
+    <MudMainContent>
+        <CustomMainContent Body="@Body"></CustomMainContent>
+    </MudMainContent>
+</MudLayout>
