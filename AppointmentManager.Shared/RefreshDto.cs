@@ -1,3 +1,3 @@
-﻿namespace AppointmentManager.API.Models;
+﻿namespace AppointmentManager.Shared;
 
 public record RefreshDto(string RefreshToken);

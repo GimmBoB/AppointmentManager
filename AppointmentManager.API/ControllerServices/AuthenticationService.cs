@@ -4,6 +4,7 @@ using AppointmentManager.API.config;
 using AppointmentManager.API.Models;
 using AppointmentManager.API.Repositories;
 using AppointmentManager.API.Security;
+using AppointmentManager.Shared;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AppointmentManager.API.ControllerServices;

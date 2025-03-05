@@ -1,5 +1,6 @@
 ﻿using AppointmentManager.API.ControllerServices;
 using AppointmentManager.API.Models;
+using AppointmentManager.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManager.API.Controllers;

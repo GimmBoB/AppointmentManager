@@ -1,4 +1,4 @@
-﻿namespace AppointmentManager.API.Models;
+﻿namespace AppointmentManager.Shared;
 
 public record TokenDto(
     string AccessToken,
