@@ -162,19 +162,28 @@ public partial class AppointmentCard
 
     private async Task UploadFileAsync(InputFileChangeEventArgs args)
     {
+        const long maxAllowedSize = 4096 * 4096;
         if (_files.Count >= 3)
         {
             Snackbar.Add("You can only upload 3 files", Severity.Info);
             return;
         }
 
-        if (_files.Any(file => file.Name == args.File.Name))
+        var file = args.File;
+        
+        if (_files.Any(f => f.Name == file.Name))
         {
             Snackbar.Add("You already uploaded a file with the same name", Severity.Info);
             return;
         }
-        var file = args.File;
-        await using var fileStream = file.OpenReadStream();
+
+        if (file.Size > maxAllowedSize)
+        {
+            Snackbar.Add("File is to big. Maximum allowed size is 4096 * 4096 bytes", Severity.Info);
+            return;
+        }
+        
+        await using var fileStream = file.OpenReadStream(maxAllowedSize: maxAllowedSize);
         using var memoryStream = new MemoryStream();
 
         await fileStream.CopyToAsync(memoryStream);
@@ -184,15 +193,9 @@ public partial class AppointmentCard
         _inputFileCount++;
     }
 
-    private string GetFileText(string fileName)
+    private void DeleteImage(int i)
     {
-        var maxLength = fileName.Length > 25 ? 25 : fileName.Length;
-        var result = fileName[..maxLength];
-        if (fileName.Length > maxLength)
-        {
-            result += "...";
-        }
-
-        return result;
+        _files.RemoveAt(i);
+        _inputFileCount--;
     }
 }
