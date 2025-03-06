@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using AppointmentManager.Shared;
 
 namespace AppointmentManager.API;
 

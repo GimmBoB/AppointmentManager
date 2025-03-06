@@ -16,7 +16,15 @@ public class BearerTokenAuthenticator
 
     public async Task<TokenResult> GetTokenResultAsync(string token, CancellationToken ct, string expectedTokenType = "access")
     {
-        var jwt = new JsonWebToken(token);
+        JsonWebToken jwt;
+        try
+        {
+            jwt = new JsonWebToken(token);
+        }
+        catch
+        {
+            return TokenResult.InValid();
+        }
         var isValid = _jwtValidator.IsTokenValid(jwt, expectedTokenType);
         if (!isValid)
             return TokenResult.InValid();

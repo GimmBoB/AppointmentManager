@@ -2,9 +2,11 @@
 
 public class Appointment
 {
-    public string Name { get; init; } = string.Empty;
-    public string Email { get; init; } = string.Empty;
-    public string? ExtraWishes { get; init; }
-    public DateTime From { get; init; }
-    public DateTime To { get; init; }
+    public Guid Id { get; set; }
+    public Guid CategoryId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string? ExtraWishes { get; set; }
+    public DateTime From { get; set; }
+    public DateTime To { get; set; }
 }

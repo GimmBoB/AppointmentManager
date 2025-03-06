@@ -1,40 +1,39 @@
-﻿@* @inject CustomStateProvider StateProvider *@
+﻿@inherits BreakpointComponentBase
 
-
-@inherits BreakpointComponentBase
-
-<ErrorBoundary @ref="_errorBoundary">
-    <ChildContent>
-        <MudContainer Style="@(IsMobileView ? "padding-top: 10px !important; padding-bottom: 10px !important" : "")" MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
-            @Body
-        </MudContainer>
-    </ChildContent>
-    <ErrorContent Context="ex">
-        <MudContainer Style="@(IsMobileView ? "padding-top: 10px !important; padding-bottom: 10px !important" : "")" MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
-            @Body
-        </MudContainer>
-            @* @switch (ex) *@
-            @* { *@
-            @*     case ResponseException: *@
-            @*         AddSnackBar(ex.Message); *@
-            @*         break; *@
-            @*     case TokenExpiredException: *@
-            @*         var task = Task.Run(() => StateProvider.LogoutAsync()); *@
-            @*         task.Wait(); *@
-            @*         break; *@
-            @*     case HttpRequestException: *@
-            @*         var task2 = Task.Run(() => StateProvider.LogoutAsync()); *@
-            @*         task2.Wait(); *@
-            @*         break; *@
-            @*     case ServerNotAvailableException: *@
-            @*         AddSnackBar(Localizer[ExceptionMessageConstants.ServerNotAvailable]); *@
-            @*         break; *@
-            @*     case InformationException: *@
-            @*         AddSnackBar(ex.Message, Severity.Info); *@
-            @*         break; *@
-            @*     default: *@
-            @*         AddSnackBar(Localizer[ExceptionMessageConstants.AnUnhandledErrorOccured]); *@
-            @*         break; *@
-            @* } *@
-    </ErrorContent>
-</ErrorBoundary>
+<AuthorizeView>
+    <Authorized>
+        <ErrorBoundary @ref="_errorBoundary">
+            <ChildContent>
+                <MudContainer Style="@(IsMobileView ? "padding-top: 5px !important; padding-bottom: 5px !important" : "")" MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+                    @Body
+                </MudContainer>
+            </ChildContent>
+            <ErrorContent Context="ex">
+                <MudContainer Style="@(IsMobileView ? "padding-top: 5px !important; padding-bottom: 5px !important" : "")" MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+                    @Body
+                </MudContainer>
+                @{
+                    AddSnackBar(ex.Message);
+                    StateProvider.Logout();
+                }
+            </ErrorContent>
+        </ErrorBoundary>
+    </Authorized>
+    <NotAuthorized>
+        <ErrorBoundary @ref="_errorBoundary">
+            <ChildContent>
+                <MudContainer Style="@(IsMobileView ? "padding-top: 5px !important; padding-bottom: 5px !important" : "")" MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+                    @Body
+                </MudContainer>
+            </ChildContent>
+            <ErrorContent Context="ex">
+                <MudContainer Style="@(IsMobileView ? "padding-top: 5px !important; padding-bottom: 5px !important" : "")" MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+                    @Body
+                </MudContainer>
+                @{
+                    AddSnackBar(ex.Message);
+                }
+            </ErrorContent>
+        </ErrorBoundary>
+    </NotAuthorized>
+</AuthorizeView>

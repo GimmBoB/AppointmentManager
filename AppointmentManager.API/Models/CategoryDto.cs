@@ -1,4 +1,6 @@
-﻿namespace AppointmentManager.API.Models;
+﻿using AppointmentManager.Shared;
+
+namespace AppointmentManager.API.Models;
 
 public record CategoryDto(
     Guid Id,

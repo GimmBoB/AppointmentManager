@@ -33,8 +33,8 @@ public class AppointmentRepository
         var query = _dbContext.Appointments.AsQueryable();
         
         query = query.Where(appointment =>
-            searchFilter.To >= appointment.From &&
-            searchFilter.From <= appointment.To);
+            searchFilter.To > appointment.From &&
+            searchFilter.From < appointment.To);
 
         var result = query.ToList();
 

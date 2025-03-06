@@ -1,4 +1,5 @@
 ﻿@page "/appointment"
+@using AppointmentManager.Shared
 
 <MudPaper MaxWidth="500px" Style="margin-left: auto; margin-right: auto; width: 100%">
 <MudCard Style="position: relative" Outlined="true">
@@ -8,7 +9,94 @@
                     <MudText Typo="Typo.h6">Appointment</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
+            <MudCardActions>
+            </MudCardActions>
             <MudCardContent>
+                @for (var i = 0; i <= _inputFileCount; i++)
+                {
+                    @if (_inputFileCount <= 3)
+                    {
+                        <MudFileUpload T="IBrowserFile" Accept=".jpg, .jpeg, .png, .gif, .tif, .tiff" OnFilesChanged="UploadFileAsync">
+                            <ButtonTemplate>
+                                <MudIconButton
+                                    HtmlTag="label"
+                                    Icon="@Icons.Material.Outlined.AddPhotoAlternate"
+                                    Size="Size.Small"
+                                    for="@context">
+                                </MudIconButton>
+                            </ButtonTemplate>
+                        </MudFileUpload>
+                    }
+                }
+                @* TODO namen wieder anzeighen und files löschen und nach dem dritten butten darf kein 4ter kommen
+                @* @{foreach (var file in _files) *@
+                @* { *@
+                @*     <MudLink Typo="Typo.caption" Underline="Underline.Always">@(GetFileText(file.Name))</MudLink> *@
+                @*     $1$ <MudText ></MudText> #1# *@
+                @*     <MudSpacer/> *@
+                @* }} *@
+                <MudTextField
+                    @bind-Value="_item.Name"
+                    For="@(() => _item.Name)"
+                    Label="Name"
+                    HelperText="Enter your name here"
+                    Class="mt-3"
+                    Required="true"/>
+                <MudTextField
+                    @bind-Value="_item.Email"
+                    For="@(() => _item.Email)"
+                    Label="E-Mail"
+                    HelperText="Enter your e-mail here"
+                    Class="mt-3"
+                    Required="true"/>
+                <MudTextField
+                    @bind-Value="_item.ExtraWishes"
+                    For="@(() => _item.ExtraWishes)"
+                    Label="Extra wishes"
+                    HelperText="Enter your extra wishes here"
+                    Class="mt-3"
+                    Required="false"/>
+                <MudDatePicker
+                    IsDateDisabledFunc="time => time.Date < DateTime.Now.Date"
+                    Date="@_selectedDate"
+                    Rounded="true"
+                    Adornment="Adornment.Start"
+                    AnchorOrigin="Origin.CenterCenter"
+                    TransformOrigin="Origin.CenterCenter"
+                    IconSize="Size.Small"
+                    Required="true"
+                    Label="Date"
+                    HelperText="Pick a date here"
+                    DateChanged="ChangeDateAsync"/>
+                <MudSelect
+                    T="AppointmentTimeSlotDto"
+                    @bind-Value="_selectedTimeSlot"
+                    Label="Timeslot"
+                    HelperText="Pick your timeslot here"
+                    Class="mt-3"
+                    Required="true"
+                    ToStringFunc="@(timeslot => timeslot is null ? "No time slot available" : $"{timeslot.From:hh\\:mm} - {timeslot?.To:hh\\:mm}")"
+                    RequiredError="Timeslot is required"
+                    Disabled="_timeSlotDisabled">
+                    @foreach (var timeslot in _timeSlots)
+                    {
+                        <MudSelectItem Value="timeslot"/>
+                    }
+                </MudSelect>
+                <MudSelect
+                    T="AppointmentCategory"
+                    @bind-Value="_selectedCategory"
+                    Label="Category"
+                    HelperText="Pick your category here"
+                    Class="mt-3"
+                    Required="true"
+                    ToStringFunc="@(category => category is null ? "" : $"{category.Name}")"
+                    RequiredError="Category is required">
+                    @foreach (var category in _categories)
+                    {
+                        <MudSelectItem Value="category"/>
+                    }
+                </MudSelect>
             </MudCardContent>
         </MudForm>
         <MudCardActions>

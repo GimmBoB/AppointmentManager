@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using AppointmentManager.Shared;
 
 namespace AppointmentManager.API.Models;
 

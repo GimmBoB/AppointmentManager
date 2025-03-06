@@ -1,5 +1,6 @@
 ﻿using AppointmentManager.API.config;
 using AppointmentManager.API.Models;
+using AppointmentManager.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 

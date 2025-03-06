@@ -1,26 +1,35 @@
 ﻿using System.Security.Claims;
+using AppointmentManager.Shared;
 using AppointmentManager.Web.HttpClients;
 using AppointmentManager.Web.Models;
+using Blazored.LocalStorage;
+using Core.Extensions.CollectionRelated;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor;
 
 namespace AppointmentManager.Web.Services;
 
 public class CustomStateProvider : AuthenticationStateProvider
 {
+    private readonly ISnackbar _snackbar;
+    private readonly ILocalStorageService _localStorageService;
     private readonly ApplicationManagerApiClient _apiClient;
-    private bool _isAuthenticated; 
     private readonly NavigationManager _navigation;
-     // todo beim instanziieren token versuchen aus browser local storage zu holen
 
+    private bool _isAuthenticated;
+    private string _accessToken = string.Empty;
+    private string _refreshToken = string.Empty;
+    private const string RefreshStorageKey = "refreshToken";
 
-    public string? AccessToken { get; private set; } = string.Empty;
-    private string? RefreshToken { get; set; } = string.Empty;
-
-    public CustomStateProvider(ApplicationManagerApiClient apiClient, NavigationManager navigation)
+    public string AccessToken => _accessToken;
+    
+    public CustomStateProvider(ApplicationManagerApiClient apiClient, NavigationManager navigation, ISnackbar snackbar, ILocalStorageService localStorageService)
     {
         _apiClient = apiClient;
         _navigation = navigation;
+        _snackbar = snackbar;
+        _localStorageService = localStorageService;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -49,40 +58,92 @@ public class CustomStateProvider : AuthenticationStateProvider
         return new AuthenticationState(new ClaimsPrincipal(identity));
     }
     
-    public async Task LoginAsync(LoginDto loginParameters)
+    public async Task LoginAsync(LoginDto loginParameters, CancellationToken ct)
     {
         try
         {
-            var token = await _apiClient.LoginAsync(loginParameters);
-            AccessToken = token?.AccessToken;
-            RefreshToken = token?.RefreshToken;
-            _isAuthenticated = true;
+            var result = await _apiClient.LoginAsync(loginParameters, ct);
+            await result.ContinueWithAsync(
+                async token =>
+                {
+                    _isAuthenticated = true;
+                    _accessToken = token.AccessToken;
+                    _refreshToken = token.RefreshToken;
+                    await _localStorageService.SetItemAsync(RefreshStorageKey, _refreshToken, ct);
+                    return token;
+                },
+                async errors =>
+                {
+                    _isAuthenticated = false;
+                    _snackbar.Add($"An error occured: {errors.ToSeparatedString("; ")}", Severity.Warning);
+                    await _localStorageService.RemoveItemAsync(RefreshStorageKey, ct);
+                    return TokenDto.Empty;
+                },
+                async () =>
+                {
+                    _isAuthenticated = false;
+                    await _localStorageService.RemoveItemAsync(RefreshStorageKey, ct);
+                    return TokenDto.Empty;
+                });
+            
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
-        catch
+        catch(Exception e)
         {
             _isAuthenticated = false;
-            throw;
+            await _localStorageService.RemoveItemAsync(RefreshStorageKey, ct);
+            _snackbar.Add(e.Message, Severity.Error);
         }
-
-        
-        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
     
     public async Task RefreshAsync()
     {
         try
         {
-            var token = await _apiClient.RefreshAsync(RefreshToken);
-            AccessToken = token?.AccessToken;
-            RefreshToken = token?.RefreshToken;
-            _isAuthenticated = true;
+            if (string.IsNullOrWhiteSpace(_refreshToken) && await _localStorageService.ContainKeyAsync(RefreshStorageKey))
+                _refreshToken = await _localStorageService.GetItemAsync<string>(RefreshStorageKey) ?? string.Empty;
+
+            var result = await _apiClient.RefreshAsync(_refreshToken);
+
+            await result.ContinueWithAsync(
+                async token =>
+                {
+                    _isAuthenticated = true;
+                    _accessToken = token.AccessToken;
+                    _refreshToken = token.RefreshToken;
+                    await _localStorageService.SetItemAsync(RefreshStorageKey, _refreshToken);
+                    return token;
+                },
+                async errors =>
+                {
+                    _isAuthenticated = false;
+                    await _localStorageService.RemoveItemAsync(RefreshStorageKey);
+                    throw new HttpRequestException(errors.ToSeparatedString("; "));
+                },
+                async () =>
+                {
+                    _isAuthenticated = false;
+                    await _localStorageService.RemoveItemAsync(RefreshStorageKey);
+                    return TokenDto.Empty;
+                });
+            
         }
         catch
         {
             _isAuthenticated = false;
+            await _localStorageService.RemoveItemAsync(RefreshStorageKey);
             throw;
         }
         
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    }
+
+    public void Logout()
+    {
+        _isAuthenticated = false;
+        _accessToken = string.Empty;
+        _refreshToken = string.Empty;
+
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 }

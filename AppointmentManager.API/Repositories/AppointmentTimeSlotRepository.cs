@@ -1,5 +1,7 @@
 ﻿using AppointmentManager.API.Database;
 using AppointmentManager.API.Models;
+using AppointmentManager.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentManager.API.Repositories;
 
@@ -34,6 +36,23 @@ public class AppointmentTimeSlotRepository
 
         if (searchFilter.Days.HasValue)
             query = query.Where(slot => slot.Day == searchFilter.Days);
+
+        if (searchFilter.freeSlots is not null)
+        {
+            var appointments = _dbContext.Appointments.Where(appointment =>
+                appointment.Status != AppointmentStatus.Canceled && searchFilter.freeSlots.To >= appointment.From &&
+                searchFilter.freeSlots.From <= appointment.To).ToList();
+
+            var from = appointments.Select(appointment => new TimeSpan(appointment.From.Hour, appointment.From.Minute,
+                appointment.From.Second));
+            var to = appointments.Select(appointment => new TimeSpan(appointment.To.Hour, appointment.To.Minute,
+                appointment.To.Second));
+            
+            if (appointments.Any())
+            {
+                query = query.Where(slot => !from.Contains(slot.To) && !to.Contains(slot.To));
+            }
+        }
 
         var result = query.OrderBy(slot => slot.Day).ThenBy(slot => slot.From).ToList();
         

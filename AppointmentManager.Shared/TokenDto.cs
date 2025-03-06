@@ -6,4 +6,8 @@ public record TokenDto(
     DateTime AccessExpirationDateTimeUtc,
     DateTime RefreshExpirationDateTimeUtc,
     int AccessExpiresInSeconds,
-    int RefreshExpiresInSeconds);
+    int RefreshExpiresInSeconds)
+{
+    public static TokenDto Empty =>
+        new TokenDto(string.Empty, string.Empty, DateTime.MinValue, DateTime.MinValue, 0, 0);
+}

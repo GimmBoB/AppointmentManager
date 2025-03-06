@@ -1,5 +1,6 @@
 ﻿using AppointmentManager.API.ControllerServices;
 using AppointmentManager.API.Models;
+using AppointmentManager.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,6 @@ public class AppointmentTimeSlotController : ApplicationControllerBase
     public Task<ActionResult> GetAllAsync(CancellationToken ct) =>
         GetResultAsync<ICollection<AppointmentTimeSlotDto>>(() => _service.GetAllAsync(ct));
 
-    [Authorize]
     [HttpPost("search")]
     public Task<ActionResult> GetAsync(TimeSlotSearchFilter searchFilter, CancellationToken ct) =>
         GetResultAsync<ICollection<AppointmentTimeSlotDto>>(() => _service.GetAsync(searchFilter, ct));

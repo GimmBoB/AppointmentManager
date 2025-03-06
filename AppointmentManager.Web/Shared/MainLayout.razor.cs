@@ -18,7 +18,7 @@ public partial class MainLayout
         
         ThemeStateProvider.OnStateHasChanged();
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

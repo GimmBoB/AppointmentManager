@@ -1,4 +1,4 @@
-﻿namespace AppointmentManager.API;
+﻿namespace AppointmentManager.Shared;
 
 public interface IEntityDto
 {

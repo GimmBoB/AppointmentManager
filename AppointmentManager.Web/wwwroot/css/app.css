@@ -1,0 +1,12 @@
+.customMarkedDateDark {
+    color: seagreen !important;
+}
+
+.customMarkedDateLight {
+    color: #45b645 !important;
+}
+
+.mud-input {
+    color: inherit !important;
+    background-color: inherit !important;;
+}

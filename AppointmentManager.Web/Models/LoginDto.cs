@@ -1,4 +1,6 @@
-﻿namespace AppointmentManager.Web.Models;
+﻿using AppointmentManager.Shared;
+
+namespace AppointmentManager.Web.Models;
 
 public class LoginDto
 {

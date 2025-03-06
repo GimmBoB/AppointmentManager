@@ -8,6 +8,9 @@
 
 <MudLayout>
     <MudAppBar Elevation="10">
+        <MudSpacer/>
+        <MudText Typo="Typo.h6" Color="Color.Primary">Rent-Your-Engineer</MudText>
+        <MudSpacer/>
         <MudToggleIconButton
             Size="Size.Medium"
             ToggledSize="Size.Medium"
@@ -15,7 +18,6 @@
             ToggledIcon="@Icons.Material.Filled.LightMode" ToggledTitle="Light-Mode"
             ToggledChanged="@OnToggledChanged" Toggled="@ThemeStateProvider.IsDarkMode"/>
     </MudAppBar>
-    <MudText >Geil</MudText>
     <MudMainContent>
         <CustomMainContent Body="@Body"></CustomMainContent>
     </MudMainContent>

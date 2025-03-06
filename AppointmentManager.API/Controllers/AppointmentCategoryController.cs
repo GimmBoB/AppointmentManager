@@ -20,7 +20,6 @@ public class AppointmentCategoryController : ApplicationControllerBase
     public Task<ActionResult> GetByIdAsync(Guid id, CancellationToken ct) =>
         GetResultAsync<CategoryDto>(() => _service.GetByIdAsync(id, ct));
     
-    [Authorize]
     [HttpGet("all")]
     public Task<ActionResult> GetAllAsync(CancellationToken ct) =>
         GetResultAsync<ICollection<CategoryDto>>(() => _service.GetAllAsync(ct));
