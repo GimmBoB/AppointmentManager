@@ -20,7 +20,8 @@ public partial class AppointmentCard
     private int _inputFileCount = 0;
     private List<File> _files = new();
     private bool _timeSlotDisabled = true;
-    private AppointmentTimeSlotDto[] _timeSlots = Array.Empty<AppointmentTimeSlotDto>();
+    private AppointmentTimeSlotDto[] _timeSlotsOfDay = Array.Empty<AppointmentTimeSlotDto>();
+    private Dictionary<DateTime, List<AppointmentTimeSlotDto>> _allTimeSlotsPerDate = new();
     private AppointmentTimeSlotDto? _selectedTimeSlot;
     private AppointmentCategory[] _categories = Array.Empty<AppointmentCategory>();
     private AppointmentCategory? _selectedCategory;
@@ -94,44 +95,60 @@ public partial class AppointmentCard
         }
     }
 
-    private async Task ChangeDateAsync(DateTime? date)
+    private Task ChangeDateAsync(DateTime? date)
     {
         if (date is null)
         {
             _timeSlotDisabled = true;
-            return;
+            return Task.CompletedTask;
         }
 
         _selectedDate = date.Value;
+        _timeSlotsOfDay = _allTimeSlotsPerDate.TryGetValue(date.Value.Date, out var slots)
+            ? slots.ToArray()
+            : Array.Empty<AppointmentTimeSlotDto>();
+
+        _selectedTimeSlot = _timeSlotsOfDay.Any() ? _timeSlotsOfDay.MinBy(dto => dto.From) : null;
+
+        _timeSlotDisabled = !_timeSlotsOfDay.Any();
         
-        await FetchTimeslotsAsync();
+        StateHasChanged();
+        
+        return Task.CompletedTask;
     }
 
     private async Task FetchTimeslotsAsync()
     {
-        var option = await ApiClient.GetTimeSlotsAsync(new TimeSlotSearchFilter(_selectedDate.DayOfWeek, new FreeSlotSearchFilter
+        // TODO API liefert sobald ein slot an einem tag gebucht wurde gar keine freien slots mehr zurück
+        var option = await ApiClient.GetTimeSlotsByDateRangeAsync(new FreeSlotSearchFilter
         {
-            // start of day
-            From = _selectedDate.Date,
-            // end of day
-            To = _selectedDate.Date.AddDays(1).AddTicks(-1)
-        }));
+            From = DateTime.Now.Date, To = DateTime.Now.Date.AddDays(31).AddTicks(-1)
+        });
 
-        _timeSlots = option.ContinueWith(
-            timeSlots =>
+        _allTimeSlotsPerDate = option.ContinueWith(
+            dictionary =>
             {
-                var slots = timeSlots.ToArray();
-                _selectedTimeSlot = slots.FirstOrDefault();
-                return slots;
+                var first = dictionary.OrderBy(d => d.Key).Where(d => d.Value.Any()).Select(d => new
+                    {
+                        d
+                            .Key,
+                        d.Value
+                    })
+                    .FirstOrDefault();
+                
+                _selectedTimeSlot = first?.Value.Any() ?? false ? first.Value.MinBy(dto => dto.From) : null;
+                _selectedDate = first?.Key ?? DateTime.Now;
+                _timeSlotsOfDay = first?.Value.ToArray() ?? Array.Empty<AppointmentTimeSlotDto>();
+                return dictionary;
             },
             errors =>
             {
                 Snackbar.Add(errors.ToSeparatedString("; "), Severity.Warning);
-                return Array.Empty<AppointmentTimeSlotDto>();
+                return new Dictionary<DateTime, List<AppointmentTimeSlotDto>>();
             },
-            Array.Empty<AppointmentTimeSlotDto>);
-        
-        _timeSlotDisabled = !_timeSlots.Any();
+            () => new Dictionary<DateTime, List<AppointmentTimeSlotDto>>());
+
+        _timeSlotDisabled = !_timeSlotsOfDay.Any();
     }
 
     private async Task FetchCategoriesAsync()

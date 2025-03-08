@@ -28,6 +28,13 @@ public class ApplicationManagerApiClient : BaseHttpClient
         return await PostAsJsonAsync<TimeSlotSearchFilter, IEnumerable<AppointmentTimeSlotDto>>("AppointmentTimeSlot/search",
             searchFilter, ct);
     }
+    
+    public async Task<Option<Dictionary<DateTime, List<AppointmentTimeSlotDto>>>> GetTimeSlotsByDateRangeAsync(FreeSlotSearchFilter searchFilter,
+        CancellationToken ct = default)
+    {
+        return await PostAsJsonAsync<FreeSlotSearchFilter, Dictionary<DateTime, List<AppointmentTimeSlotDto>>>("AppointmentTimeSlot/searchByDateRange",
+            searchFilter, ct);
+    }
 
     public async Task<Option<Appointment>> AddAppointmentAsync(Appointment appointment, CancellationToken ct = default)
     {

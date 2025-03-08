@@ -30,6 +30,11 @@ public class AppointmentTimeSlotController : ApplicationControllerBase
     public Task<ActionResult> GetAsync(TimeSlotSearchFilter searchFilter, CancellationToken ct) =>
         GetResultAsync<ICollection<AppointmentTimeSlotDto>>(() => _service.GetAsync(searchFilter, ct));
 
+    [HttpPost("searchByDateRange")]
+    public Task<ActionResult> GetByDateRangeAsync(FreeSlotSearchFilter searchFilter, CancellationToken ct) =>
+        GetResultAsync<Dictionary<DateTime, List<AppointmentTimeSlot>>>(() =>
+            _service.GetTimeSlotsPerDateRangeAsync(searchFilter, ct));
+
     [Authorize]
     [HttpPost]
     public Task<ActionResult> AddAsync(AppointmentTimeSlotDto dto, CancellationToken ct) =>

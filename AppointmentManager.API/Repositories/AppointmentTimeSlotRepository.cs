@@ -29,13 +29,13 @@ public class AppointmentTimeSlotRepository
 
         return result;
     }
-
+    
     public Task<List<AppointmentTimeSlot>> GetAsync(TimeSlotSearchFilter searchFilter, CancellationToken _)
     {
         var query = _dbContext.AppointmentTimeSlots.AsQueryable();
 
-        if (searchFilter.Days.HasValue)
-            query = query.Where(slot => slot.Day == searchFilter.Days);
+        if (searchFilter.Day.HasValue)
+            query = query.Where(slot => slot.Day == searchFilter.Day);
 
         if (searchFilter.freeSlots is not null)
         {
