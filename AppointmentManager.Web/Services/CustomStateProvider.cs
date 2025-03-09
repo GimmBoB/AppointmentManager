@@ -14,7 +14,7 @@ public class CustomStateProvider : AuthenticationStateProvider
 {
     private readonly ISnackbar _snackbar;
     private readonly ILocalStorageService _localStorageService;
-    private readonly ApplicationManagerApiClient _apiClient;
+    private readonly AuthenticationClient _apiClient;
     private readonly NavigationManager _navigation;
 
     private bool _isAuthenticated;
@@ -23,8 +23,9 @@ public class CustomStateProvider : AuthenticationStateProvider
     private const string RefreshStorageKey = "refreshToken";
 
     public string AccessToken => _accessToken;
+    public bool IsAuthorized => _isAuthenticated;
     
-    public CustomStateProvider(ApplicationManagerApiClient apiClient, NavigationManager navigation, ISnackbar snackbar, ILocalStorageService localStorageService)
+    public CustomStateProvider(AuthenticationClient apiClient, NavigationManager navigation, ISnackbar snackbar, ILocalStorageService localStorageService)
     {
         _apiClient = apiClient;
         _navigation = navigation;

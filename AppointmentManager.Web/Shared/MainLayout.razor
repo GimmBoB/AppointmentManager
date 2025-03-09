@@ -6,27 +6,48 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="10">
-        <MudSpacer/>
-        <MudText Typo="Typo.h6" Color="Color.Primary">Rent-Your-Engineer</MudText>
-        <MudSpacer/>
-        <MudToggleIconButton
-            Size="Size.Medium"
-            ToggledSize="Size.Medium"
-            Icon="@Icons.Material.Filled.DarkMode" Title="Dark-Mode"
-            ToggledIcon="@Icons.Material.Filled.LightMode" ToggledTitle="Light-Mode"
-            ToggledChanged="@OnToggledChanged" Toggled="@ThemeStateProvider.IsDarkMode"/>
+<MudSwipeArea OnSwipe="SwipeDrawer">
+    <MudLayout>
+        <MudAppBar Elevation="10">
+            <AuthorizeView>
+                <Authorized>
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu" Size="Size.Medium" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+                </Authorized>
+            </AuthorizeView>
+            <MudSpacer/>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <MudText Typo="Typo.h6" Color="Color.Primary">Rent-Your-Engineer</MudText>
+                </NotAuthorized>
+            </AuthorizeView>
+            <MudSpacer/>
+            <MudToggleIconButton
+                Size="Size.Medium"
+                ToggledSize="Size.Medium"
+                Icon="@Icons.Material.Filled.DarkMode" Title="Dark-Mode"
+                ToggledIcon="@Icons.Material.Filled.LightMode" ToggledTitle="Light-Mode"
+                ToggledChanged="@OnToggledChanged" Toggled="@ThemeStateProvider.IsDarkMode"/>
+            <AuthorizeView>
+                <Authorized>
+                    <MudIconButton Title="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="LogoutAsync"></MudIconButton>
+                </Authorized>
+                <NotAuthorized>
+                    <MudIconButton Title="Login" Icon="@Icons.Material.Filled.Login" href="@KnownDirections.Login"></MudIconButton>
+                </NotAuthorized>
+            </AuthorizeView>
+        </MudAppBar>
         <AuthorizeView>
             <Authorized>
-                <MudIconButton Title="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="LogoutAsync"></MudIconButton>
+                <MudDrawer @bind-Open="_drawerOpen" Elevation="10">
+                    <MudDrawerHeader>
+                        <MudText Typo="Typo.h6">Menu</MudText>
+                    </MudDrawerHeader>
+                    <NavMenu @ref="_menu"/>
+                </MudDrawer>
             </Authorized>
-            <NotAuthorized>
-                <MudIconButton Title="Login" Icon="@Icons.Material.Filled.Login" href="@KnownDirections.Login"></MudIconButton>
-            </NotAuthorized>
         </AuthorizeView>
-    </MudAppBar>
-    <MudMainContent>
-        <CustomMainContent Body="@Body"></CustomMainContent>
-    </MudMainContent>
-</MudLayout>
+        <MudMainContent>
+            <CustomMainContent Body="@Body"></CustomMainContent>
+        </MudMainContent>
+    </MudLayout>
+</MudSwipeArea>

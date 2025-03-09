@@ -24,6 +24,10 @@ builder.Services.AddHttpClient<ApplicationManagerApiClient>(client =>
 {
     client.BaseAddress = new Uri(apiConfig.BaseAddress);
 });
+builder.Services.AddHttpClient<AuthenticationClient>(client =>
+{
+    client.BaseAddress = new Uri(apiConfig.BaseAddress);
+});
 
 builder.Services.AddScoped<CustomStateProvider>();
 builder.Services.AddAuthorizationCore();

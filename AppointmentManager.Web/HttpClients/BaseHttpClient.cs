@@ -17,25 +17,24 @@ public abstract class BaseHttpClient
     private readonly CustomStateProvider _stateProvider;
     private readonly AsyncPolicyWrap<HttpResponseMessage> _policyWrap;
 
-    protected BaseHttpClient(HttpClient httpClient)
+    protected BaseHttpClient(HttpClient httpClient, CustomStateProvider stateProvider)
     {
         _httpClient = httpClient;
-        // _stateProvider = stateProvider;
+        _stateProvider = stateProvider;
         
-        // var refreshPolicy = Policy<HttpResponseMessage>
-        //     .HandleResult(resp => resp.StatusCode == HttpStatusCode.Unauthorized)
-        //     .RetryAsync(2, async (_, _) =>
-        //     {
-        //         await _stateProvider.RefreshAsync();
-        //         SetTokenToHeader();
-        //     });
-        // var serverOfflinePolicy = Policy<HttpResponseMessage>
-        //     .Handle<HttpRequestException>()
-        //     .OrResult(x => x.StatusCode is >= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout)
-        //     .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 3));
+        var refreshPolicy = Policy<HttpResponseMessage>
+            .HandleResult(resp => resp.StatusCode == HttpStatusCode.Unauthorized)
+            .RetryAsync(2, async (_, _) =>
+            {
+                await _stateProvider.RefreshAsync();
+                SetTokenToHeader();
+            });
+        var serverOfflinePolicy = Policy<HttpResponseMessage>
+            .Handle<HttpRequestException>()
+            .OrResult(x => x.StatusCode is >= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout)
+            .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 3));
 
-        // _policyWrap = refreshPolicy.WrapAsync(serverOfflinePolicy);
-
+        _policyWrap = refreshPolicy.WrapAsync(serverOfflinePolicy);
     }
 
     private void SetTokenToHeader()
@@ -69,14 +68,17 @@ public abstract class BaseHttpClient
         where TResult : class
         where TInput : class
     {
-        var message = new HttpRequestMessage(method, uri)
+        var responseMessage = await _policyWrap.ExecuteAsync(() =>
         {
-            Content = JsonContent.Create(value, mediaType: null),
-            Version = _defaultRequestVersion,
-            VersionPolicy = _defaultVersionPolicy
-        };
-
-        var responseMessage = await _policyWrap.ExecuteAsync(() => _httpClient.SendAsync(message, ct));
+            var message = new HttpRequestMessage(method, uri)
+            {
+                Content = JsonContent.Create(value, mediaType: null),
+                Version = _defaultRequestVersion,
+                VersionPolicy = _defaultVersionPolicy
+            };
+            
+            return _httpClient.SendAsync(message, ct);
+        });
         
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
         {
@@ -94,13 +96,16 @@ public abstract class BaseHttpClient
     private async Task<Option<TResult>> SendAsync<TResult>(HttpMethod method, string uri, CancellationToken ct)
         where TResult : class
     {
-        var message = new HttpRequestMessage(method, uri)
+        var responseMessage = await _policyWrap.ExecuteAsync(() =>
         {
-            Version = _defaultRequestVersion,
-            VersionPolicy = _defaultVersionPolicy
-        };
+            var message = new HttpRequestMessage(method, uri)
+            {
+                Version = _defaultRequestVersion,
+                VersionPolicy = _defaultVersionPolicy
+            };
 
-        var responseMessage = await _policyWrap.ExecuteAsync(() => _httpClient.SendAsync(message, ct));
+            return _httpClient.SendAsync(message, ct);
+        });
         
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
         {
@@ -117,14 +122,17 @@ public abstract class BaseHttpClient
     
     private async Task SendAsync(HttpMethod method, string uri, HttpContent content, CancellationToken ct)
     {
-        var message = new HttpRequestMessage(method, uri)
+        var responseMessage = await _policyWrap.ExecuteAsync(() =>
         {
-            Version = _defaultRequestVersion,
-            VersionPolicy = _defaultVersionPolicy,
-            Content = content
-        };
-
-        var responseMessage = await _policyWrap.ExecuteAsync(() => _httpClient.SendAsync(message, ct));
+            var message = new HttpRequestMessage(method, uri)
+            {
+                Version = _defaultRequestVersion,
+                VersionPolicy = _defaultVersionPolicy,
+                Content = content
+            };
+            
+            return _httpClient.SendAsync(message, ct);
+        });
         
         responseMessage.EnsureSuccessStatusCode();
     }

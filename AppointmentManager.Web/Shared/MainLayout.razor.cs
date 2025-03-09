@@ -9,6 +9,9 @@ public partial class MainLayout
     [Inject] private ThemeStateProvider ThemeStateProvider { get; set; }
     [Inject] Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; }
     [Inject] private CustomStateProvider StateProvider { get; set; }
+
+    private bool _drawerOpen;
+    private NavMenu? _menu;
     
     private MudThemeProvider? _mudThemeProvider;
     private const string UserPreferenceStorageKey = "userPreference";
@@ -61,4 +64,22 @@ public partial class MainLayout
     }
 
     private Task LogoutAsync() => StateProvider.LogoutAsync(CancellationToken.None);
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    
+    private void SwipeDrawer(SwipeDirection swipeDirection)
+    {
+        if (!StateProvider.IsAuthorized)
+            return;
+
+        _drawerOpen = swipeDirection switch
+        {
+            SwipeDirection.LeftToRight => true,
+            SwipeDirection.RightToLeft => false,
+            _ => _drawerOpen
+        };
+    }
 }

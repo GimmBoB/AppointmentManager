@@ -4,27 +4,10 @@ using AppointmentManager.Web.Services;
 
 namespace AppointmentManager.Web.HttpClients;
 
-// TODO split authentication in separate service to inject customstateprovider here
 public class ApplicationManagerApiClient : BaseHttpClient
 {
-    // public ApplicationManagerApiClient(HttpClient httpClient, CustomStateProvider stateProvider) : base(httpClient, stateProvider)
-    // {
-    // }
-    public ApplicationManagerApiClient(HttpClient httpClient) : base(httpClient)
+    public ApplicationManagerApiClient(HttpClient httpClient, CustomStateProvider stateProvider) : base(httpClient, stateProvider)
     {
-    }
-    
-    public async Task<Option<TokenDto>> LoginAsync(LoginDto login, CancellationToken ct = default)
-    {
-        return await PostAsJsonAsync<LoginDto, TokenDto>("Authentication/login", login, ct);
-    }
-
-    public async Task<Option<TokenDto>> RefreshAsync(string refreshToken, CancellationToken ct = default)
-    {
-        ArgumentNullException.ThrowIfNull(refreshToken);
-        var refresh = new RefreshDto(refreshToken);
-        
-        return await PostAsJsonAsync<RefreshDto, TokenDto>("Authentication/refresh", refresh, ct);
     }
 
     public async Task<Option<IEnumerable<AppointmentTimeSlotDto>>> GetTimeSlotsAsync(TimeSlotSearchFilter searchFilter,
