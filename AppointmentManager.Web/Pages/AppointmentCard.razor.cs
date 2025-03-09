@@ -119,7 +119,6 @@ public partial class AppointmentCard
 
     private async Task FetchTimeslotsAsync()
     {
-        // TODO API liefert sobald ein slot an einem tag gebucht wurde gar keine freien slots mehr zurück
         var option = await ApiClient.GetTimeSlotsByDateRangeAsync(new FreeSlotSearchFilter
         {
             From = DateTime.Now.Date, To = DateTime.Now.Date.AddDays(31).AddTicks(-1)

@@ -14,7 +14,7 @@
                 </MudContainer>
                 @{
                     AddSnackBar(ex.Message);
-                    StateProvider.Logout();
+                    _ = StateProvider.LogoutAsync(CancellationToken.None);
                 }
             </ErrorContent>
         </ErrorBoundary>
@@ -32,6 +32,7 @@
                 </MudContainer>
                 @{
                     AddSnackBar(ex.Message);
+                    NavigationManager.NavigateTo(KnownDirections.Home);
                 }
             </ErrorContent>
         </ErrorBoundary>

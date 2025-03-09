@@ -1,0 +1,39 @@
+﻿@page "/login"
+
+<EditForm Model="_loginDto" OnValidSubmit="LoginAsync">
+<DataAnnotationsValidator/>
+    <CardDisplay>
+        <MudCard Style="position: relative" Outlined="true">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">Login</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField
+                    @bind-Value="@_loginDto.Email"
+                    For="@(() => _loginDto.Email)"
+                    Label="E-Mail"
+                    HelperText="Enter your e-mail here"
+                    Class="mt-3"/>
+                <MudStack>
+                    <MudPasswordField
+                        @bind-Value="@_loginDto.Password"
+                        For="@(() => _loginDto.Password)"
+                        InputType="InputType.Password" T="string"
+                        Label="Password"
+                        HelperText="Enter your password here"
+                        Class="mt-3"/>
+                </MudStack>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Text" Color="Color.Success" Class="ml-auto" Disabled="@_showOverlay">
+                    Login
+                </MudButton>
+            </MudCardActions>
+            <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true">
+                <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
+            </MudOverlay>
+        </MudCard>
+    </CardDisplay>
+</EditForm>

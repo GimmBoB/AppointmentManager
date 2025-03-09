@@ -9,6 +9,7 @@ public partial class CustomMainContent
 {
     [Inject] private ISnackbar Snackbar { get; set; }
     [Inject] private CustomStateProvider StateProvider { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
     [Parameter] public RenderFragment? Body { get; set; }
 
     private ErrorBoundary? _errorBoundary;

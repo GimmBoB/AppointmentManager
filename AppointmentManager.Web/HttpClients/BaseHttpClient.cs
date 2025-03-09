@@ -1,6 +1,11 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using AppointmentManager.Shared;
 using AppointmentManager.Web.Extensions;
+using AppointmentManager.Web.Services;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Wrap;
 
 namespace AppointmentManager.Web.HttpClients;
 
@@ -8,11 +13,38 @@ public abstract class BaseHttpClient
 {
     private readonly HttpClient _httpClient;
     private readonly Version _defaultRequestVersion = HttpVersion.Version11;
-    private readonly HttpVersionPolicy _defaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;    // todo retry policy mit refresh
+    private readonly HttpVersionPolicy _defaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+    private readonly CustomStateProvider _stateProvider;
+    private readonly AsyncPolicyWrap<HttpResponseMessage> _policyWrap;
 
     protected BaseHttpClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
+        // _stateProvider = stateProvider;
+        
+        // var refreshPolicy = Policy<HttpResponseMessage>
+        //     .HandleResult(resp => resp.StatusCode == HttpStatusCode.Unauthorized)
+        //     .RetryAsync(2, async (_, _) =>
+        //     {
+        //         await _stateProvider.RefreshAsync();
+        //         SetTokenToHeader();
+        //     });
+        // var serverOfflinePolicy = Policy<HttpResponseMessage>
+        //     .Handle<HttpRequestException>()
+        //     .OrResult(x => x.StatusCode is >= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout)
+        //     .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 3));
+
+        // _policyWrap = refreshPolicy.WrapAsync(serverOfflinePolicy);
+
+    }
+
+    private void SetTokenToHeader()
+    {
+        // clear header value
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer");
+
+        // set token to request header
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", _stateProvider.AccessToken);
     }
 
     protected async Task<Option<TResult>> PostAsJsonAsync<TInput, TResult>(string uri, TInput input, CancellationToken ct)
@@ -44,7 +76,7 @@ public abstract class BaseHttpClient
             VersionPolicy = _defaultVersionPolicy
         };
 
-        var responseMessage = await _httpClient.SendAsync(message, ct);
+        var responseMessage = await _policyWrap.ExecuteAsync(() => _httpClient.SendAsync(message, ct));
         
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
         {
@@ -68,7 +100,7 @@ public abstract class BaseHttpClient
             VersionPolicy = _defaultVersionPolicy
         };
 
-        var responseMessage = await _httpClient.SendAsync(message, ct);
+        var responseMessage = await _policyWrap.ExecuteAsync(() => _httpClient.SendAsync(message, ct));
         
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
         {
@@ -92,7 +124,7 @@ public abstract class BaseHttpClient
             Content = content
         };
 
-        var responseMessage = await _httpClient.SendAsync(message, ct);
+        var responseMessage = await _policyWrap.ExecuteAsync(() => _httpClient.SendAsync(message, ct));
         
         responseMessage.EnsureSuccessStatusCode();
     }

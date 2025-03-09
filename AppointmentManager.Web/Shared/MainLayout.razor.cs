@@ -8,6 +8,8 @@ public partial class MainLayout
 {
     [Inject] private ThemeStateProvider ThemeStateProvider { get; set; }
     [Inject] Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; }
+    [Inject] private CustomStateProvider StateProvider { get; set; }
+    
     private MudThemeProvider? _mudThemeProvider;
     private const string UserPreferenceStorageKey = "userPreference";
     private async Task OnToggledChanged()
@@ -57,4 +59,6 @@ public partial class MainLayout
         
         return isDarkMode;
     }
+
+    private Task LogoutAsync() => StateProvider.LogoutAsync(CancellationToken.None);
 }

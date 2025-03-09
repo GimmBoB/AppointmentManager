@@ -1,3 +1,3 @@
 ﻿namespace AppointmentManager.Shared;
 
-public record TimeSlotSearchFilter(DayOfWeek? Day, FreeSlotSearchFilter? freeSlots = default);
+public record TimeSlotSearchFilter(DayOfWeek? Day, FreeSlotSearchFilter? FreeSlots = default);

@@ -1,10 +1,15 @@
 ﻿using AppointmentManager.Shared;
 using AppointmentManager.Web.Models;
+using AppointmentManager.Web.Services;
 
 namespace AppointmentManager.Web.HttpClients;
 
+// TODO split authentication in separate service to inject customstateprovider here
 public class ApplicationManagerApiClient : BaseHttpClient
 {
+    // public ApplicationManagerApiClient(HttpClient httpClient, CustomStateProvider stateProvider) : base(httpClient, stateProvider)
+    // {
+    // }
     public ApplicationManagerApiClient(HttpClient httpClient) : base(httpClient)
     {
     }

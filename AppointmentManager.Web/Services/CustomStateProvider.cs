@@ -103,6 +103,9 @@ public class CustomStateProvider : AuthenticationStateProvider
             if (string.IsNullOrWhiteSpace(_refreshToken) && await _localStorageService.ContainKeyAsync(RefreshStorageKey))
                 _refreshToken = await _localStorageService.GetItemAsync<string>(RefreshStorageKey) ?? string.Empty;
 
+            if (string.IsNullOrWhiteSpace(_refreshToken))
+                return;
+
             var result = await _apiClient.RefreshAsync(_refreshToken);
 
             await result.ContinueWithAsync(
@@ -138,11 +141,13 @@ public class CustomStateProvider : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
-    public void Logout()
+    public async Task LogoutAsync(CancellationToken ct)
     {
         _isAuthenticated = false;
         _accessToken = string.Empty;
         _refreshToken = string.Empty;
+        
+        await _localStorageService.RemoveItemAsync(RefreshStorageKey, ct);
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }

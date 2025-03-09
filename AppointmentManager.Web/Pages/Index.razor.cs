@@ -7,7 +7,6 @@ public partial class Index
 {
     private MudCarousel<string> _carousel = new();
     private string[] _source;
-    private int _selectedIndex;
     
     public Index()
     {
@@ -16,11 +15,5 @@ public partial class Index
         var directoryInfo = new DirectoryInfo(imagesPath);
         var fileInfos = directoryInfo.GetFiles();
         _source = fileInfos.Select(info => $"images/{info.Name}").ToArray();
-    }
-
-    protected override void OnInitialized()
-    {
-        
-        base.OnInitialized();
     }
 }

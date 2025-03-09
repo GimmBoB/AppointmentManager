@@ -1,0 +1,41 @@
+﻿@using AppointmentManager.Shared
+
+@page "/appointmentcategories"
+
+@inherits BreakpointComponentBase
+
+@attribute [Authorize(Roles = "admin")]
+
+<TableDisplay>
+    <MudDataGrid T="AppointmentCategory"
+              @ref="_table"
+              Loading="_pageLoading"
+              ServerData="ReloadServerDataAsync"
+              Breakpoint="Breakpoint.Sm"
+              SortLabel="true"
+              ReadOnly="true"
+              Outlined="true"
+              Virtualize="true"
+              Striped="true"
+              MultiSelection="false"
+              FixedFooter="true"
+              FixedHeader="true"
+              Height="@(IsSmartphoneView ? string.Empty : "600px")">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Categories</MudText>
+            <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Outlined.Add" Disabled="_buttonsDisabled" OnClick="() => NavigationManager.NavigateToWithReturnUri(KnownDirections.AppointmentCategoryCard)">Add</MudIconButton>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn T="AppointmentCategory" TProperty="string" Filterable="false" Property="category => category.Name" Title="Name">
+                <CellTemplate>
+                    @context.Item.Name
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="AppointmentCategory" TProperty="string" Filterable="false" Property="category => category.Description" Title="Description">
+                <CellTemplate>
+                    @(context.Item.Description ?? string.Empty)
+                </CellTemplate>
+            </PropertyColumn>
+        </Columns>
+    </MudDataGrid>
+</TableDisplay>

@@ -58,7 +58,7 @@ public class AppointmentService
         }, ct);
 
         // TODO use templates and send to Admin and Mail Address from Appointment
-        _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
+        // _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
         
         return ItemApiResult<AppointmentDto>.Created(MapToDto(result));
     }

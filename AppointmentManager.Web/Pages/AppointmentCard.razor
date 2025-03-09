@@ -4,110 +4,110 @@
 
 <PageTitle>Appointment</PageTitle>
 
-<MudPaper MaxWidth="500px" Style="margin-left: auto; margin-right: auto; width: 100%">
-<MudCard Style="position: relative" Outlined="true">
-        <MudForm Model="@_item" @ref="@_form" Validation="@(new Func<object, string, Task<IEnumerable<string>>>(ValidateAsync))" ValidationDelay="0">
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h6">Appointment</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudTextField
-                    @bind-Value="_item.Name"
-                    For="@(() => _item.Name)"
-                    Label="Name"
-                    HelperText="Enter your name here"
-                    Class="mt-3"
-                    Required="true"/>
-                <MudTextField
-                    @bind-Value="_item.Email"
-                    For="@(() => _item.Email)"
-                    Label="E-Mail"
-                    HelperText="Enter your e-mail here"
-                    Class="mt-3"
-                    Required="true"/>
-                <MudTextField
-                    @bind-Value="_item.ExtraWishes"
-                    For="@(() => _item.ExtraWishes)"
-                    Label="Extra wishes"
-                    HelperText="Enter your extra wishes here"
-                    Class="mt-3"
-                    Required="false"/>
-                <MudDatePicker
-                    IsDateDisabledFunc="@(time => time.Date < DateTime.Now.Date || (!_allTimeSlotsPerDate.TryGetValue(time.Date, out var slots) || !slots.Any()))"
-                    Date="@_selectedDate"
-                    Rounded="true"
-                    Adornment="Adornment.Start"
-                    AnchorOrigin="Origin.CenterCenter"
-                    TransformOrigin="Origin.CenterCenter"
-                    IconSize="Size.Small"
-                    Required="true"
-                    Label="Date"
-                    HelperText="Pick a date here"
-                    DateChanged="ChangeDateAsync"/>
-                <MudSelect
-                    T="AppointmentTimeSlotDto"
-                    @bind-Value="_selectedTimeSlot"
-                    Label="Timeslot"
-                    HelperText="Pick your timeslot here"
-                    Class="mt-3"
-                    Required="true"
-                    ToStringFunc="@(timeslot => timeslot is null ? "No time slot available pick another date" : $"{timeslot.From:hh\\:mm} - {timeslot?.To:hh\\:mm}")"
-                    RequiredError="Timeslot is required"
-                    Disabled="_timeSlotDisabled">
-                    @foreach (var timeslot in _timeSlotsOfDay)
+<CardDisplay>
+    <MudCard Style="position: relative" Outlined="true">
+            <MudForm Model="@_item" @ref="@_form" Validation="@(new Func<object, string, Task<IEnumerable<string>>>(ValidateAsync))" ValidationDelay="0">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Appointment</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudTextField
+                        @bind-Value="_item.Name"
+                        For="@(() => _item.Name)"
+                        Label="Name"
+                        HelperText="Enter your name here"
+                        Class="mt-3"
+                        Required="true"/>
+                    <MudTextField
+                        @bind-Value="_item.Email"
+                        For="@(() => _item.Email)"
+                        Label="E-Mail"
+                        HelperText="Enter your e-mail here"
+                        Class="mt-3"
+                        Required="true"/>
+                    <MudTextField
+                        @bind-Value="_item.ExtraWishes"
+                        For="@(() => _item.ExtraWishes)"
+                        Label="Extra wishes"
+                        HelperText="Enter your extra wishes here"
+                        Class="mt-3"
+                        Required="false"/>
+                    <MudDatePicker
+                        IsDateDisabledFunc="@(time => time.Date < DateTime.Now.Date || (!_allTimeSlotsPerDate.TryGetValue(time.Date, out var slots) || !slots.Any()))"
+                        Date="@_selectedDate"
+                        Rounded="true"
+                        Adornment="Adornment.Start"
+                        AnchorOrigin="Origin.CenterCenter"
+                        TransformOrigin="Origin.CenterCenter"
+                        IconSize="Size.Small"
+                        Required="true"
+                        Label="Date"
+                        HelperText="Pick a date here"
+                        DateChanged="ChangeDateAsync"/>
+                    <MudSelect
+                        T="AppointmentTimeSlotDto"
+                        @bind-Value="_selectedTimeSlot"
+                        Label="Timeslot"
+                        HelperText="Pick your timeslot here"
+                        Class="mt-3"
+                        Required="true"
+                        ToStringFunc="@(timeslot => timeslot is null ? "No time slot available pick another date" : $"{timeslot.From:hh\\:mm} - {timeslot?.To:hh\\:mm}")"
+                        RequiredError="Timeslot is required"
+                        Disabled="_timeSlotDisabled">
+                        @foreach (var timeslot in _timeSlotsOfDay)
+                        {
+                            <MudSelectItem Value="timeslot"/>
+                        }
+                    </MudSelect>
+                    <MudSelect
+                        T="AppointmentCategory"
+                        @bind-Value="_selectedCategory"
+                        Label="Category"
+                        HelperText="Pick your category here"
+                        Class="mt-3"
+                        Required="true"
+                        ToStringFunc="@(category => category is null ? "" : $"{category.Name}")"
+                        RequiredError="Category is required">
+                        @foreach (var category in _categories)
+                        {
+                            <MudSelectItem Value="category"/>
+                        }
+                    </MudSelect>
+                    @for (var i = 0; i <= _inputFileCount; i++)
                     {
-                        <MudSelectItem Value="timeslot"/>
+                        @if (_inputFileCount <= 3 && i < 3)
+                        {
+                            var i1 = i;
+                            var hasFile = _files.TryGetElement(i1, out _);
+                            <MudFileUpload T="IBrowserFile" Accept=".jpg, .jpeg, .png, .gif, .tif, .tiff" OnFilesChanged="UploadFileAsync">
+                                <ButtonTemplate>
+                                    <MudIconButton
+                                        HtmlTag="label"
+                                        Icon="@Icons.Material.Outlined.AddPhotoAlternate"
+                                        Size="Size.Small"
+                                        for="@context"
+                                        Disabled="@hasFile">
+                                    </MudIconButton>
+                                    @{
+                                        if (_files.TryGetElement(i1, out var file))
+                                        {
+                                            <MudLink Underline="Underline.Always" Color="Color.Primary" Typo="Typo.subtitle2">@(file.Name)</MudLink>
+                                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => DeleteImage(i1))"/>                                    }
+                                    }
+                                </ButtonTemplate>
+                            </MudFileUpload>
+                        }
                     }
-                </MudSelect>
-                <MudSelect
-                    T="AppointmentCategory"
-                    @bind-Value="_selectedCategory"
-                    Label="Category"
-                    HelperText="Pick your category here"
-                    Class="mt-3"
-                    Required="true"
-                    ToStringFunc="@(category => category is null ? "" : $"{category.Name}")"
-                    RequiredError="Category is required">
-                    @foreach (var category in _categories)
-                    {
-                        <MudSelectItem Value="category"/>
-                    }
-                </MudSelect>
-                @for (var i = 0; i <= _inputFileCount; i++)
-                {
-                    @if (_inputFileCount <= 3 && i < 3)
-                    {
-                        var i1 = i;
-                        var hasFile = _files.TryGetElement(i1, out _);
-                        <MudFileUpload T="IBrowserFile" Accept=".jpg, .jpeg, .png, .gif, .tif, .tiff" OnFilesChanged="UploadFileAsync">
-                            <ButtonTemplate>
-                                <MudIconButton
-                                    HtmlTag="label"
-                                    Icon="@Icons.Material.Outlined.AddPhotoAlternate"
-                                    Size="Size.Small"
-                                    for="@context"
-                                    Disabled="@hasFile">
-                                </MudIconButton>
-                                @{
-                                    if (_files.TryGetElement(i1, out var file))
-                                    {
-                                        <MudLink Underline="Underline.Always" Color="Color.Primary" Typo="Typo.subtitle2">@(file.Name)</MudLink>
-                                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => DeleteImage(i1))"/>                                    }
-                                }
-                            </ButtonTemplate>
-                        </MudFileUpload>
-                    }
-                }
-                </MudCardContent>
-        </MudForm>
-    <MudCardActions>
-        <MudButton OnClick="Cancel" Disabled="@_showOverlay">Cancel</MudButton>
-        <MudButton OnClick="@(async () => await SubmitAsync())" Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" Disabled="@_showOverlay">Send</MudButton>
-    </MudCardActions>
-        <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true">
-            <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
-        </MudOverlay>
-    </MudCard>
-</MudPaper>
+                    </MudCardContent>
+            </MudForm>
+        <MudCardActions>
+            <MudButton OnClick="Cancel" Disabled="@_showOverlay">Cancel</MudButton>
+            <MudButton OnClick="@(async () => await SubmitAsync())" Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" Disabled="@_showOverlay">Send</MudButton>
+        </MudCardActions>
+            <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true">
+                <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
+            </MudOverlay>
+        </MudCard>
+</CardDisplay>
