@@ -26,7 +26,7 @@ public partial class AppointmentCard
     private AppointmentCategory[] _categories = Array.Empty<AppointmentCategory>();
     private AppointmentCategory? _selectedCategory;
 
-    [Inject] private IBaseValidator<Appointment> _validator { get; set; }
+    [Inject] private IBaseValidator<Appointment> Validator { get; set; }
     [Inject] private NavigationManager Navigation { get; set; }
     [Inject] private ApplicationManagerApiClient ApiClient { get; set; }
     [Inject] private ISnackbar Snackbar { get; set; }
@@ -42,13 +42,8 @@ public partial class AppointmentCard
 
     private async Task<IEnumerable<string>> ValidateAsync(object model, string propertyName)
     {
-        var errors = await _validator.ValidateValue(model, propertyName);
+        var errors = await Validator.ValidateValue(model, propertyName);
         return errors;
-    }
-
-    private void Cancel()
-    {
-        Navigation.TryNavigateToReturnUrl();
     }
 
     private async Task SubmitAsync()

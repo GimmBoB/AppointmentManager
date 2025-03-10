@@ -1,6 +1,6 @@
-﻿@using AppointmentManager.Shared
+﻿@page "/appointmentcategories"
 
-@page "/appointmentcategories"
+@using AppointmentManager.Shared
 
 @inherits BreakpointComponentBase
 
@@ -8,19 +8,19 @@
 
 <TableDisplay>
     <MudDataGrid T="AppointmentCategory"
-              @ref="_table"
-              Loading="_pageLoading"
-              ServerData="ReloadServerDataAsync"
-              Breakpoint="Breakpoint.Sm"
-              SortLabel="true"
-              ReadOnly="true"
-              Outlined="true"
-              Virtualize="true"
-              Striped="true"
-              MultiSelection="false"
-              FixedFooter="true"
-              FixedHeader="true"
-              Height="@(IsSmartphoneView ? string.Empty : "600px")">
+                 @ref="_grid"
+                 Loading="_pageLoading"
+                 ServerData="ReloadServerDataAsync"
+                 Breakpoint="Breakpoint.Sm"
+                 SortLabel="true"
+                 ReadOnly="true"
+                 Outlined="true"
+                 Virtualize="true"
+                 Striped="true"
+                 MultiSelection="false"
+                 FixedFooter="true"
+                 FixedHeader="true"
+                 Height="@(IsSmartphoneView ? string.Empty : "600px")">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Categories</MudText>
             <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Outlined.Add" Disabled="_buttonsDisabled" OnClick="() => NavigationManager.NavigateToWithReturnUri(KnownDirections.AppointmentCategoryCard)">Add</MudIconButton>
@@ -36,6 +36,17 @@
                     @(context.Item.Description ?? string.Empty)
                 </CellTemplate>
             </PropertyColumn>
+            <TemplateColumn T="AppointmentCategory" CellClass="d-flex justify-end" Sortable="false" Resizable="false" StickyRight="true" HeaderStyle="width: 3em;">
+                <CellTemplate>
+                    <MudButtonGroup Variant="Variant.Text" Size="Size.Medium" OverrideStyles="true">
+                        <MudIconButton Title="Edit" Size="@Size.Medium" Icon="@Icons.Material.Outlined.Edit" OnClick="@(() => NavigationManager.NavigateToWithReturnUri(string.Format(KnownDirections.AppointmentCategoryCardUpdate, context.Item.Id)))"/>
+                        <MudIconButton Title="Delete" Size="@Size.Medium" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => DeleteAsync(context.Item))"/>
+                    </MudButtonGroup>
+                </CellTemplate>
+            </TemplateColumn>            
         </Columns>
     </MudDataGrid>
+    <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true" >
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
+    </MudOverlay>
 </TableDisplay>

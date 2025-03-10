@@ -57,7 +57,7 @@ public class AppointmentService
             Status = AppointmentStatus.Requested
         }, ct);
 
-        // TODO use templates and send to Admin and Mail Address from Appointment
+        // TODO use templates and send to Admin and Mail Address from Appointment with localization
         // _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
         
         return ItemApiResult<AppointmentDto>.Created(MapToDto(result));
@@ -83,7 +83,7 @@ public class AppointmentService
 
         var result = await _repository.UpdateAsync(appointment, ct);
 
-        // TODO use templates and send to Admin and Mail Address from Appointment
+        // TODO use templates and send to Admin and Mail Address from Appointment with localization
         _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
         
         return ItemApiResult<AppointmentDto>.Succeeded(MapToDto(result));

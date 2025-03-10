@@ -1,3 +1,4 @@
+using AppointmentManager.Shared;
 using AppointmentManager.Web.config;
 using AppointmentManager.Web.HttpClients;
 using AppointmentManager.Web.Models;
@@ -20,6 +21,7 @@ builder.Services.AddScoped<ThemeStateProvider>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddScoped<IBaseValidator<Appointment>, AppointmentValidator>();
+builder.Services.AddScoped<IBaseValidator<AppointmentCategory>, AppointmentCategoryValidator>();
 builder.Services.AddHttpClient<ApplicationManagerApiClient>(client =>
 {
     client.BaseAddress = new Uri(apiConfig.BaseAddress);

@@ -34,6 +34,21 @@ public class ApplicationManagerApiClient : BaseHttpClient
         return await GetAsJsonAsync<IEnumerable<AppointmentCategory>>("AppointmentCategory/all", ct);
     }
 
+    public async Task<Option<AppointmentCategory>> AddCategoryAsync(AppointmentCategory category, CancellationToken ct = default)
+    {
+        return await PostAsJsonAsync<AppointmentCategory, AppointmentCategory>("AppointmentCategory", category, ct);
+    }
+    
+    public async Task<Option<AppointmentCategory>> UpdateCategoryAsync(Guid id, AppointmentCategory category, CancellationToken ct = default)
+    {
+        return await PutAsJsonAsync<AppointmentCategory, AppointmentCategory>($"AppointmentCategory/{id}", category, ct);
+    }
+
+    public async Task DeleteCategoryAsync(AppointmentCategory category, CancellationToken ct = default)
+    {
+        await DeleteAsync($"AppointmentCategory/{category.Id}", ct);
+    }
+
     public async Task AddFileAsync(Guid appointmentId, MultipartFormDataContent file, CancellationToken ct = default)
     {
         await PostAsync($"AppointmentExtension/{appointmentId}", file, ct);

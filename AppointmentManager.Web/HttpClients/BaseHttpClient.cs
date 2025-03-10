@@ -53,10 +53,22 @@ public abstract class BaseHttpClient
         return await SendAsync<TInput, TResult>(HttpMethod.Post, uri, input, ct);
     }
     
+    protected async Task<Option<TResult>> PutAsJsonAsync<TInput, TResult>(string uri, TInput input, CancellationToken ct)
+        where TResult : class
+        where TInput : class
+    {
+        return await SendAsync<TInput, TResult>(HttpMethod.Put, uri, input, ct);
+    }
+    
     protected async Task<Option<TResult>> GetAsJsonAsync<TResult>(string uri, CancellationToken ct)
         where TResult : class
     {
         return await SendAsync<TResult>(HttpMethod.Get, uri, ct);
+    }
+    
+    protected async Task DeleteAsync(string uri, CancellationToken ct)
+    {
+        await SendAsync(HttpMethod.Delete, uri, ct);
     }
 
     protected async Task PostAsync(string uri, HttpContent content, CancellationToken ct)
@@ -68,13 +80,16 @@ public abstract class BaseHttpClient
         where TResult : class
         where TInput : class
     {
+        SetTokenToHeader();
+        
         var responseMessage = await _policyWrap.ExecuteAsync(() =>
         {
             var message = new HttpRequestMessage(method, uri)
             {
                 Content = JsonContent.Create(value, mediaType: null),
                 Version = _defaultRequestVersion,
-                VersionPolicy = _defaultVersionPolicy
+                VersionPolicy = _defaultVersionPolicy,
+                Method = method
             };
             
             return _httpClient.SendAsync(message, ct);
@@ -96,12 +111,15 @@ public abstract class BaseHttpClient
     private async Task<Option<TResult>> SendAsync<TResult>(HttpMethod method, string uri, CancellationToken ct)
         where TResult : class
     {
+        SetTokenToHeader();
+        
         var responseMessage = await _policyWrap.ExecuteAsync(() =>
         {
             var message = new HttpRequestMessage(method, uri)
             {
                 Version = _defaultRequestVersion,
-                VersionPolicy = _defaultVersionPolicy
+                VersionPolicy = _defaultVersionPolicy,
+                Method = method
             };
 
             return _httpClient.SendAsync(message, ct);
@@ -122,13 +140,35 @@ public abstract class BaseHttpClient
     
     private async Task SendAsync(HttpMethod method, string uri, HttpContent content, CancellationToken ct)
     {
+        SetTokenToHeader();
+        
         var responseMessage = await _policyWrap.ExecuteAsync(() =>
         {
             var message = new HttpRequestMessage(method, uri)
             {
                 Version = _defaultRequestVersion,
                 VersionPolicy = _defaultVersionPolicy,
-                Content = content
+                Content = content,
+                Method = method
+            };
+            
+            return _httpClient.SendAsync(message, ct);
+        });
+        
+        responseMessage.EnsureSuccessStatusCode();
+    }
+    
+    private async Task SendAsync(HttpMethod method, string uri, CancellationToken ct)
+    {
+        SetTokenToHeader();
+        
+        var responseMessage = await _policyWrap.ExecuteAsync(() =>
+        {
+            var message = new HttpRequestMessage(method, uri)
+            {
+                Version = _defaultRequestVersion,
+                VersionPolicy = _defaultVersionPolicy,
+                Method = method
             };
             
             return _httpClient.SendAsync(message, ct);

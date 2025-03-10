@@ -12,9 +12,10 @@ public partial class AppointmentCategoryList
     [Inject] private ISnackbar Snackbar { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; }
     
-    private MudDataGrid<AppointmentCategory> _table = new();
+    private MudDataGrid<AppointmentCategory> _grid = new();
     private bool _pageLoading;
     private bool _buttonsDisabled;
+    private bool _showOverlay;
 
     private async Task<GridData<AppointmentCategory>> ReloadServerDataAsync(GridState<AppointmentCategory> arg)
     {
@@ -52,5 +53,27 @@ public partial class AppointmentCategoryList
             Items = appointmentCategories,
             TotalItems = appointmentCategories.Count
         };
+    }
+
+    private async Task DeleteAsync(AppointmentCategory category)
+    {
+        // TODO submit
+        try
+        {
+            _showOverlay = true;
+            _buttonsDisabled = true;
+            StateHasChanged();
+            await ApiClient.DeleteCategoryAsync(category);
+            
+            await _grid.ReloadServerData();
+
+            Snackbar.Add("Item deleted", Severity.Success);
+        }
+        finally
+        {
+            _showOverlay = false;
+            _buttonsDisabled = false;
+            StateHasChanged();
+        }
     }
 }
