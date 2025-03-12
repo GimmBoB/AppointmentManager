@@ -1,5 +1,6 @@
 ﻿using AppointmentManager.Shared;
 using AppointmentManager.Web.HttpClients;
+using AppointmentManager.Web.Models;
 using AppointmentManager.Web.Shared;
 using Core.Extensions.CollectionRelated;
 using Microsoft.AspNetCore.Components;
@@ -7,37 +8,37 @@ using MudBlazor;
 
 namespace AppointmentManager.Web.Pages;
 
-public partial class AppointmentCategoryList
+public partial class AppointmentTimeslotList
 {
     [Inject] private ApplicationManagerApiClient ApiClient { get; set; }
     [Inject] private ISnackbar Snackbar { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; }
     [Inject] private IDialogService DialogService { get; set; }
     
-    private MudDataGrid<AppointmentCategory> _grid = new();
+    private MudDataGrid<Timeslot> _grid = new();
     private bool _pageLoading;
     private bool _buttonsDisabled;
     private bool _showOverlay;
 
-    private async Task<GridData<AppointmentCategory>> ReloadServerDataAsync(GridState<AppointmentCategory> arg)
+    private async Task<GridData<Timeslot>> ReloadServerDataAsync(GridState<Timeslot> arg)
     {
         _pageLoading = true;
         _buttonsDisabled = true;
 
         
-        List<AppointmentCategory> appointmentCategories;
+        List<Timeslot> appointmentTimeSlots;
         try
         {
-            var option = await ApiClient.GetCategoriesAsync(CancellationToken.None);
+            var option = await ApiClient.GetTimeSlotsAsync(new TimeSlotSearchFilter(null));
 
-            appointmentCategories = option.ContinueWith(
-                categories => categories.ToList(),
+            appointmentTimeSlots = option.ContinueWith(
+                timeslots => timeslots.OrderBy(timeslot => timeslot.Day).ToList(),
                 errors =>
                 {
                     Snackbar.Add(errors.ToSeparatedString("; "), Severity.Warning);
-                    return new List<AppointmentCategory>();
+                    return new List<Timeslot>();
                 },
-                () => new List<AppointmentCategory>());
+                () => new List<Timeslot>());
         }
         catch (Exception e)
         {
@@ -50,18 +51,18 @@ public partial class AppointmentCategoryList
             _buttonsDisabled = false;
         }
 
-        return new GridData<AppointmentCategory>
+        return new GridData<Timeslot>
         {
-            Items = appointmentCategories,
-            TotalItems = appointmentCategories.Count
+            Items = appointmentTimeSlots,
+            TotalItems = appointmentTimeSlots.Count
         };
     }
 
-    private async Task DeleteAsync(AppointmentCategory category)
+    private async Task DeleteAsync(Timeslot timeslot)
     {
         var parameters = new DialogParameters
         {
-            { "ContentText", $"Do you want to delete '{category.Name}'?" },
+            { "ContentText", $"Do you want to delete '{timeslot.From} - {timeslot.To}'?" },
             { "SubmitButtonText", "Delete" },
             { "CancelButtonText", "Cancel" },
             { "Color", Color.Error }
@@ -80,7 +81,7 @@ public partial class AppointmentCategoryList
                 _showOverlay = true;
                 _buttonsDisabled = true;
                 StateHasChanged();
-                await ApiClient.DeleteCategoryAsync(category);
+                await ApiClient.DeleteTimeSlotAsync(timeslot);
                 
                 await _grid.ReloadServerData();
 

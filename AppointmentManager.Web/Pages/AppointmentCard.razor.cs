@@ -20,9 +20,9 @@ public partial class AppointmentCard
     private int _inputFileCount = 0;
     private List<File> _files = new();
     private bool _timeSlotDisabled = true;
-    private AppointmentTimeSlotDto[] _timeSlotsOfDay = Array.Empty<AppointmentTimeSlotDto>();
-    private Dictionary<DateTime, List<AppointmentTimeSlotDto>> _allTimeSlotsPerDate = new();
-    private AppointmentTimeSlotDto? _selectedTimeSlot;
+    private Timeslot[] _timeSlotsOfDay = Array.Empty<Timeslot>();
+    private Dictionary<DateTime, List<Timeslot>> _allTimeSlotsPerDate = new();
+    private Timeslot? _selectedTimeSlot;
     private AppointmentCategory[] _categories = Array.Empty<AppointmentCategory>();
     private AppointmentCategory? _selectedCategory;
 
@@ -101,7 +101,7 @@ public partial class AppointmentCard
         _selectedDate = date.Value;
         _timeSlotsOfDay = _allTimeSlotsPerDate.TryGetValue(date.Value.Date, out var slots)
             ? slots.ToArray()
-            : Array.Empty<AppointmentTimeSlotDto>();
+            : Array.Empty<Timeslot>();
 
         _selectedTimeSlot = _timeSlotsOfDay.Any() ? _timeSlotsOfDay.MinBy(dto => dto.From) : null;
 
@@ -132,15 +132,15 @@ public partial class AppointmentCard
                 
                 _selectedTimeSlot = first?.Value.Any() ?? false ? first.Value.MinBy(dto => dto.From) : null;
                 _selectedDate = first?.Key ?? DateTime.Now;
-                _timeSlotsOfDay = first?.Value.ToArray() ?? Array.Empty<AppointmentTimeSlotDto>();
+                _timeSlotsOfDay = first?.Value.ToArray() ?? Array.Empty<Timeslot>();
                 return dictionary;
             },
             errors =>
             {
                 Snackbar.Add(errors.ToSeparatedString("; "), Severity.Warning);
-                return new Dictionary<DateTime, List<AppointmentTimeSlotDto>>();
+                return new Dictionary<DateTime, List<Timeslot>>();
             },
-            () => new Dictionary<DateTime, List<AppointmentTimeSlotDto>>());
+            () => new Dictionary<DateTime, List<Timeslot>>());
 
         _timeSlotDisabled = !_timeSlotsOfDay.Any();
     }

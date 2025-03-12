@@ -1,0 +1,57 @@
+﻿@page "/appointmenttimeslots"
+
+@using AppointmentManager.Web.Models
+
+@inherits BreakpointComponentBase
+
+@attribute [Authorize(Roles = "admin")]
+
+<TableDisplay>
+    <MudDataGrid T="Timeslot"
+                 @ref="_grid"
+                 Loading="_pageLoading"
+                 ServerData="ReloadServerDataAsync"
+                 Breakpoint="Breakpoint.Sm"
+                 SortLabel="true"
+                 ReadOnly="true"
+                 Outlined="true"
+                 Virtualize="true"
+                 Striped="true"
+                 MultiSelection="false"
+                 FixedFooter="true"
+                 FixedHeader="true"
+                 Height="@(IsSmartphoneView ? string.Empty : "600px")">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Timeslots</MudText>
+            <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Outlined.Add" Disabled="_buttonsDisabled" OnClick="() => NavigationManager.NavigateToWithReturnUri(KnownDirections.AppointmentTimeslotCard)">Add</MudIconButton>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn T="Timeslot" TProperty="Enum" Filterable="false" Property="timeSlotDto => timeSlotDto.Day" Title="Day">
+                <CellTemplate>
+                    @context.Item.Day.ToString()
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="Timeslot" TProperty="TimeSpan" Filterable="false" Property="timeSlotDto => timeSlotDto.From" Title="From">
+                <CellTemplate>
+                    @($"{context.Item.From.Hours:00}:{context.Item.From.Minutes:00}")
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="Timeslot" TProperty="TimeSpan" Filterable="false" Property="timeSlotDto => timeSlotDto.To" Title="To">
+                <CellTemplate>
+                    @($"{context.Item.To.Hours:00}:{context.Item.To.Minutes:00}")
+                </CellTemplate>
+            </PropertyColumn>
+            <TemplateColumn T="Timeslot" CellClass="d-flex justify-end" Sortable="false" Resizable="false" StickyRight="true" HeaderStyle="width: 3em;">
+                <CellTemplate>
+                    <MudButtonGroup Variant="Variant.Text" Size="Size.Medium" OverrideStyles="true">
+                        <MudIconButton Title="Edit" Size="@Size.Medium" Icon="@Icons.Material.Outlined.Edit" OnClick="@(() => NavigationManager.NavigateToWithReturnUri(string.Format(KnownDirections.AppointmentTimeslotCardUpdate, context.Item.Id)))"/>
+                        <MudIconButton Title="Delete" Size="@Size.Medium" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => DeleteAsync(context.Item))"/>
+                    </MudButtonGroup>
+                </CellTemplate>
+            </TemplateColumn>            
+        </Columns>
+    </MudDataGrid>
+    <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true" >
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
+    </MudOverlay>
+</TableDisplay>

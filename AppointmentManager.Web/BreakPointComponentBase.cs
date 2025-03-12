@@ -6,7 +6,9 @@ namespace AppointmentManager.Web;
 
 public abstract class BreakpointComponentBase : ComponentBase, IAsyncDisposable
 {
+#pragma warning disable CS0618
     [Inject] private IBreakpointService BreakpointListener { get; set; }
+#pragma warning restore CS0618
 
     private Guid _subscriptionId;
     

@@ -2,6 +2,7 @@
 
 @using AppointmentManager.Shared
 @using AppointmentManager.Web.Extensions
+@using AppointmentManager.Web.Models
 
 <PageTitle>Appointment</PageTitle>
 
@@ -48,7 +49,7 @@
                         HelperText="Pick a date here"
                         DateChanged="ChangeDateAsync"/>
                     <MudSelect
-                        T="AppointmentTimeSlotDto"
+                        T="Timeslot"
                         @bind-Value="_selectedTimeSlot"
                         Label="Timeslot"
                         HelperText="Pick your timeslot here"

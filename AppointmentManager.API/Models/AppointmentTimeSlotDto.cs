@@ -1,4 +1,6 @@
-﻿namespace AppointmentManager.Shared;
+﻿using AppointmentManager.Shared;
+
+namespace AppointmentManager.API.Models;
 
 public record AppointmentTimeSlotDto(
     Guid Id,
