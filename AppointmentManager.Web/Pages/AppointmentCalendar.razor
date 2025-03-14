@@ -1,0 +1,23 @@
+﻿@page "/appointment-calendar"
+
+@attribute [Authorize(Roles = "admin")]
+
+<PageTitle>Appointment-Calendar</PageTitle>
+
+<MudItem Class="d-flex flex-column align-center">
+    <MudDatePicker
+        Rounded="true"
+        DisableToolbar="true"
+        PickerVariant="PickerVariant.Static"
+        Date="@_selectedDate"
+        PickerMonth="_pickerMonth"
+        DateChanged="ChangeDate"
+        PickerMonthChanged="ChangeMonthAsync"
+        AdditionalDateClassesFunc="SetDateStyle"/>
+</MudItem>
+
+<br/>
+<br/>
+
+<AppointmentOverview
+    @ref="_appointmentOverview"/>

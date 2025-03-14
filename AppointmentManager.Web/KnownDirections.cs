@@ -11,4 +11,5 @@ public static class KnownDirections
     public const string AppointmentTimeslotList = "/appointmenttimeslots";
     public const string AppointmentTimeslotCard = "/appointmenttimeslot";
     public const string AppointmentTimeslotCardUpdate = "/appointmenttimeslot/{0}";
+    public const string AppointmentCalendar = "/appointment-calendar";
 }

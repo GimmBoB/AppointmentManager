@@ -1,6 +1,6 @@
 ﻿using AppointmentManager.API.ControllerServices;
 using AppointmentManager.API.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AppointmentManager.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

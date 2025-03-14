@@ -28,6 +28,11 @@ public class ApplicationManagerApiClient : BaseHttpClient
     {
         return await PostAsJsonAsync<Appointment, Appointment>("Appointment", appointment, ct);
     }
+    
+    public async Task<Option<IEnumerable<Appointment>>> GetAppointmentsAsync(AppointmentSearchFilter searchFilter, CancellationToken ct = default)
+    {
+        return await PostAsJsonAsync<AppointmentSearchFilter, IEnumerable<Appointment>>("Appointment/search", searchFilter, ct);
+    }
 
     public async Task<Option<IEnumerable<AppointmentCategory>>> GetCategoriesAsync(CancellationToken ct = default)
     {

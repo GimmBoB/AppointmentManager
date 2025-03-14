@@ -3,6 +3,8 @@
 
 @attribute [Authorize(Roles = "admin")]
 
+<PageTitle>Category</PageTitle>
+
 <CardDisplay>
     <MudCard Style="position: relative" Outlined="true">
         <MudForm Model="@_item" @ref="@_form" Validation="@(new Func<object, string, Task<IEnumerable<string>>>(ValidateAsync))" ValidationDelay="0">

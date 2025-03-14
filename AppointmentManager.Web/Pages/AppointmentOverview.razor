@@ -1,0 +1,59 @@
+﻿@using AppointmentManager.Web.Models
+
+@inherits BreakpointComponentBase
+
+<TableDisplay>
+    <MudDataGrid T="Appointment"
+                 @ref="_grid"
+                 Loading="_pageLoading"
+                 ServerData="ReloadServerDataAsync"
+                 Breakpoint="Breakpoint.Sm"
+                 SortLabel="true"
+                 ReadOnly="true"
+                 Outlined="true"
+                 Virtualize="true"
+                 Striped="true"
+                 MultiSelection="false"
+                 FixedFooter="true"
+                 FixedHeader="true"
+                 Height="@(IsSmartphoneView ? string.Empty : "600px")">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Appointments</MudText>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn T="Appointment" TProperty="string" Filterable="false" Property="category => category.Name" Title="Name">
+                <CellTemplate>
+                    @context.Item.Name
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="Appointment" TProperty="string" Filterable="false" Property="category => category.Email" Title="E-Mail">
+                <CellTemplate>
+                    @context.Item.Email
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="Appointment" TProperty="Guid" Filterable="false" Property="category => category.CategoryId" Title="Category">
+                <CellTemplate>
+                    @(_categories.SingleOrDefault(c => c.Id == context.Item.CategoryId)?.Name ?? string.Empty)
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="Appointment" TProperty="DateTime" Filterable="false" Property="category => category.From" Title="From">
+                <CellTemplate>
+                    @context.Item.From.ToString("HH:mm")
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="Appointment" TProperty="DateTime" Filterable="false" Property="category => category.To" Title="To">
+                <CellTemplate>
+                    @context.Item.To.ToString("HH:mm")
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn T="Appointment" TProperty="string" Filterable="false" Property="category => category.ExtraWishes" Title="Extra Wishes">
+                <CellTemplate>
+                    @context.Item.ExtraWishes
+                </CellTemplate>
+            </PropertyColumn>
+        </Columns>
+    </MudDataGrid>
+    <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true" >
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
+    </MudOverlay>
+</TableDisplay>

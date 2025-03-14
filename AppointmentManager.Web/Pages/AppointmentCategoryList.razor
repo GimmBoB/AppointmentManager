@@ -6,6 +6,8 @@
 
 @attribute [Authorize(Roles = "admin")]
 
+<PageTitle>Categories</PageTitle>
+
 <TableDisplay>
     <MudDataGrid T="AppointmentCategory"
                  @ref="_grid"
