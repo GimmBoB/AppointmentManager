@@ -1,6 +1,8 @@
-﻿namespace AppointmentManager.Web.Models;
+﻿using AppointmentManager.Shared;
 
-public class Appointment
+namespace AppointmentManager.Web.Models;
+
+public class AppointmentDto
 {
     public Guid Id { get; set; }
     public Guid CategoryId { get; set; }
@@ -9,4 +11,7 @@ public class Appointment
     public string? ExtraWishes { get; set; }
     public DateTime From { get; set; }
     public DateTime To { get; set; }
+    public AppointmentStatus Status { get; set; }
+
+    public ICollection<AppointmentExtensionDto> AppointmentExtensions { get; set; } = Array.Empty<AppointmentExtensionDto>();
 }

@@ -1,6 +1,7 @@
 ﻿using AppointmentManager.API.Database;
 using AppointmentManager.API.Models;
 using AppointmentManager.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentManager.API.Repositories;
 
@@ -33,7 +34,9 @@ public class AppointmentRepository
     {
         var query = _dbContext.Appointments.AsQueryable();
         
-        query = query.Where(appointment =>
+        query = query
+            .Include(a => a.AppointmentExtensions)
+            .Where(appointment =>
             searchFilter.To > appointment.From &&
             searchFilter.From < appointment.To);
 
@@ -42,6 +45,10 @@ public class AppointmentRepository
         return Task.FromResult(result);
     }
 
-    public async Task<Appointment?> GetByIdAsync(Guid id, CancellationToken ct) =>
-        await _dbContext.Appointments.FindAsync(new object?[] { id }, cancellationToken: ct);
+    public Task<Appointment?> GetByIdAsync(Guid id, CancellationToken ct)
+    {
+        return _dbContext.Appointments
+            .Include(a => a.AppointmentExtensions)
+            .SingleOrDefaultAsync(a => a.Id == id, cancellationToken: ct);
+    }
 }

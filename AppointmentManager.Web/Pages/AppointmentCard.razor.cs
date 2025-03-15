@@ -13,7 +13,7 @@ namespace AppointmentManager.Web.Pages;
 
 public partial class AppointmentCard
 {
-    private Appointment _item = new();
+    private AppointmentDto _item = new();
     private MudForm _form = new();
     private bool _showOverlay;
     private DateTime _selectedDate = DateTime.Today;
@@ -26,7 +26,7 @@ public partial class AppointmentCard
     private AppointmentCategory[] _categories = Array.Empty<AppointmentCategory>();
     private AppointmentCategory? _selectedCategory;
 
-    [Inject] private IBaseValidator<Appointment> Validator { get; set; }
+    [Inject] private IBaseValidator<AppointmentDto> Validator { get; set; }
     [Inject] private NavigationManager Navigation { get; set; }
     [Inject] private ApplicationManagerApiClient ApiClient { get; set; }
     [Inject] private ISnackbar Snackbar { get; set; }
@@ -161,7 +161,7 @@ public partial class AppointmentCard
         _selectedCategory = _categories.FirstOrDefault();
     }
 
-    private async Task UploadFilesToServerAsync(Appointment appointment)
+    private async Task UploadFilesToServerAsync(AppointmentDto appointment)
     {
         foreach (var file in _files)
         {

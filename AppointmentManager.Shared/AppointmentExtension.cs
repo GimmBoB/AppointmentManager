@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AppointmentManager.API.Models;
+namespace AppointmentManager.Shared;
 
 public class AppointmentExtension
 {

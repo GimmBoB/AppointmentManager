@@ -1,5 +1,6 @@
 ﻿using AppointmentManager.API.Database;
 using AppointmentManager.API.Models;
+using AppointmentManager.Shared;
 
 namespace AppointmentManager.API.Repositories;
 

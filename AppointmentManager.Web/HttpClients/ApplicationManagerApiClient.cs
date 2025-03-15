@@ -24,14 +24,14 @@ public class ApplicationManagerApiClient : BaseHttpClient
             searchFilter, ct);
     }
 
-    public async Task<Option<Appointment>> AddAppointmentAsync(Appointment appointment, CancellationToken ct = default)
+    public async Task<Option<AppointmentDto>> AddAppointmentAsync(AppointmentDto appointment, CancellationToken ct = default)
     {
-        return await PostAsJsonAsync<Appointment, Appointment>("Appointment", appointment, ct);
+        return await PostAsJsonAsync<AppointmentDto, AppointmentDto>("Appointment", appointment, ct);
     }
     
-    public async Task<Option<IEnumerable<Appointment>>> GetAppointmentsAsync(AppointmentSearchFilter searchFilter, CancellationToken ct = default)
+    public async Task<Option<IEnumerable<AppointmentDto>>> GetAppointmentsAsync(AppointmentSearchFilter searchFilter, CancellationToken ct = default)
     {
-        return await PostAsJsonAsync<AppointmentSearchFilter, IEnumerable<Appointment>>("Appointment/search", searchFilter, ct);
+        return await PostAsJsonAsync<AppointmentSearchFilter, IEnumerable<AppointmentDto>>("Appointment/search", searchFilter, ct);
     }
 
     public async Task<Option<IEnumerable<AppointmentCategory>>> GetCategoriesAsync(CancellationToken ct = default)
@@ -52,6 +52,11 @@ public class ApplicationManagerApiClient : BaseHttpClient
     public async Task<Option<AppointmentCategory>> UpdateCategoryAsync(Guid id, AppointmentCategory category, CancellationToken ct = default)
     {
         return await PutAsJsonAsync<AppointmentCategory, AppointmentCategory>($"AppointmentCategory/{id}", category, ct);
+    }
+    
+    public async Task<Option<AppointmentDto>> UpdateAppointmentAsync(Guid id, AppointmentDto appointment, CancellationToken ct = default)
+    {
+        return await PutAsJsonAsync<AppointmentDto, AppointmentDto>($"Appointment/{id}", appointment, ct);
     }
 
     public async Task DeleteCategoryAsync(AppointmentCategory category, CancellationToken ct = default)
@@ -82,5 +87,12 @@ public class ApplicationManagerApiClient : BaseHttpClient
     public async Task AddFileAsync(Guid appointmentId, MultipartFormDataContent file, CancellationToken ct = default)
     {
         await PostAsync($"AppointmentExtension/{appointmentId}", file, ct);
+    }
+    
+    public async Task<string> GetImageUrlAsync(Guid id)
+    {
+        var result = await GetByteArrayAndContentTypeAsync($"AppointmentExtension/{id}/image");
+
+        return $"data:{result.Item2};base64,{Convert.ToBase64String(result.Item1)}";
     }
 }

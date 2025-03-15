@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 
 namespace AppointmentManager.Web.Validation;
 
-public class AppointmentValidator : BaseValidator<Appointment>
+public class AppointmentValidator : BaseValidator<AppointmentDto>
 {
     public AppointmentValidator(IStringLocalizer<ValidationError> localizer) : base(localizer)
     {

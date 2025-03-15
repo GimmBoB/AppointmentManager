@@ -20,7 +20,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ThemeStateProvider>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddScoped<IBaseValidator<Appointment>, AppointmentValidator>();
+builder.Services.AddScoped<IBaseValidator<AppointmentDto>, AppointmentValidator>();
 builder.Services.AddScoped<IBaseValidator<AppointmentCategory>, AppointmentCategoryValidator>();
 builder.Services.AddScoped<IBaseValidator<Timeslot>, TimeslotValidator>();
 builder.Services.AddHttpClient<ApplicationManagerApiClient>(client =>

@@ -176,4 +176,29 @@ public abstract class BaseHttpClient
         
         responseMessage.EnsureSuccessStatusCode();
     }
+    
+    protected async Task<(byte[], string)> GetByteArrayAndContentTypeAsync(string requestUri)
+    {
+        SetTokenToHeader();
+
+        var response = await _policyWrap.ExecuteAsync(() => _httpClient.GetAsync(requestUri));
+
+
+        response.EnsureSuccessStatusCode();
+
+        var byteArray =  await GetByteArrayFromContent(response);
+        var contentType = response.Content.Headers.ContentType?.ToString() ?? string.Empty;
+
+        return (byteArray, contentType);
+    }
+    
+    private static async Task<byte[]> GetByteArrayFromContent(HttpResponseMessage response)
+    {
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        using var memoryStream = new MemoryStream();
+
+        await stream.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
 }

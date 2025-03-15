@@ -1,9 +1,10 @@
 ﻿@using AppointmentManager.Web.Models
+@using AppointmentManager.Shared
 
 @inherits BreakpointComponentBase
 
 <TableDisplay>
-    <MudDataGrid T="Appointment"
+    <MudDataGrid T="AppointmentDto"
                  @ref="_grid"
                  Loading="_pageLoading"
                  ServerData="ReloadServerDataAsync"
@@ -21,36 +22,54 @@
             <MudText Typo="Typo.h6">Appointments</MudText>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn T="Appointment" TProperty="string" Filterable="false" Property="category => category.Name" Title="Name">
+            <PropertyColumn T="AppointmentDto" TProperty="string" Filterable="false" Property="category => category.Name" Title="Name">
                 <CellTemplate>
                     @context.Item.Name
                 </CellTemplate>
             </PropertyColumn>
-            <PropertyColumn T="Appointment" TProperty="string" Filterable="false" Property="category => category.Email" Title="E-Mail">
+            <PropertyColumn T="AppointmentDto" TProperty="string" Filterable="false" Property="category => category.Email" Title="E-Mail">
                 <CellTemplate>
                     @context.Item.Email
                 </CellTemplate>
             </PropertyColumn>
-            <PropertyColumn T="Appointment" TProperty="Guid" Filterable="false" Property="category => category.CategoryId" Title="Category">
+            <PropertyColumn T="AppointmentDto" TProperty="Guid" Filterable="false" Property="category => category.CategoryId" Title="Category">
                 <CellTemplate>
                     @(_categories.SingleOrDefault(c => c.Id == context.Item.CategoryId)?.Name ?? string.Empty)
                 </CellTemplate>
             </PropertyColumn>
-            <PropertyColumn T="Appointment" TProperty="DateTime" Filterable="false" Property="category => category.From" Title="From">
+            <PropertyColumn T="AppointmentDto" TProperty="DateTime" Filterable="false" Property="category => category.From" Title="From">
                 <CellTemplate>
                     @context.Item.From.ToString("HH:mm")
                 </CellTemplate>
             </PropertyColumn>
-            <PropertyColumn T="Appointment" TProperty="DateTime" Filterable="false" Property="category => category.To" Title="To">
+            <PropertyColumn T="AppointmentDto" TProperty="DateTime" Filterable="false" Property="category => category.To" Title="To">
                 <CellTemplate>
                     @context.Item.To.ToString("HH:mm")
                 </CellTemplate>
             </PropertyColumn>
-            <PropertyColumn T="Appointment" TProperty="string" Filterable="false" Property="category => category.ExtraWishes" Title="Extra Wishes">
+            <PropertyColumn T="AppointmentDto" TProperty="string" Filterable="false" Property="category => category.ExtraWishes" Title="Extra Wishes">
                 <CellTemplate>
                     @context.Item.ExtraWishes
                 </CellTemplate>
             </PropertyColumn>
+            <TemplateColumn T="AppointmentDto" CellClass="d-flex justify-end" Sortable="false" Resizable="false" StickyRight="true" HeaderStyle="width: 3em;">
+                <CellTemplate>
+                    <MudText Color="GetColor(context.Item)">@context.Item.Status.ToString()</MudText>
+                    <MudButtonGroup Variant="Variant.Text" Size="Size.Medium" OverrideStyles="true">
+                        @if (context.Item.Status == AppointmentStatus.Requested)
+                        {
+                            <MudIconButton Title="Accept"Size="@Size.Medium" Icon="@Icons.Material.Outlined.Check" OnClick="() => UpdateStateAsync(context.Item, AppointmentStatus.Accepted)"/>
+                            <MudIconButton Title="Reject"Size="@Size.Medium" Icon="@Icons.Material.Outlined.Cancel" OnClick="() => UpdateStateAsync(context.Item, AppointmentStatus.Canceled)"/>
+                        }
+                        else
+                        {
+                            <MudIconButton Title="@GetChangeStateTitle(context.Item)" Disabled="GetChangeStateDisabled(context.Item)" Size="@Size.Medium" Icon="@Icons.Material.Outlined.ChangeCircle" 
+                                           OnClick="() => UpdateStateAsync(context.Item, context.Item.Status == AppointmentStatus.Accepted? AppointmentStatus.Canceled: AppointmentStatus.Accepted)"/>
+                        }
+                        <MudIconButton Title="View Images" Size="@Size.Medium" Icon="@Icons.Material.Outlined.Image" OnClick="@(() => ViewImagesAsync(context.Item))"/>
+                    </MudButtonGroup>
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
     </MudDataGrid>
     <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true" >

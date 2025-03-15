@@ -137,6 +137,11 @@ public class AppointmentService
     private static AppointmentDto MapToDto(Appointment appointment)
     {
         return new AppointmentDto(appointment.Id, appointment.AppointmentCategoryId, appointment.Name,
-            appointment.Email, appointment.ExtraWishes, appointment.From, appointment.To, appointment.Status);
+            appointment.Email, appointment.ExtraWishes, appointment.From, appointment.To, appointment.Status, appointment.AppointmentExtensions.Select(e => new AppointmentExtensionDto
+            {
+                Id = e.Id,
+                AppointmentId = e.AppointmentId,
+                FilePath = e.FilePath
+            }).ToList());
     }
 }

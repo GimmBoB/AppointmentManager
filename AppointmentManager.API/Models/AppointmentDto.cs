@@ -10,4 +10,4 @@ public record AppointmentDto(
         string? ExtraWishes,
         DateTime From,
         DateTime To,
-        AppointmentStatus Status) : IEntityDto;
+        AppointmentStatus Status, ICollection<AppointmentExtensionDto> AppointmentExtensions) : IEntityDto;

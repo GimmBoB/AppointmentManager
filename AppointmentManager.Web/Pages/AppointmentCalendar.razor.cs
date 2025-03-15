@@ -14,7 +14,7 @@ public partial class AppointmentCalendar
 {
     private DateTime? _pickerMonth = DateTime.Now.StartOfMonth(CultureInfo.CurrentCulture);
     private DateTime _selectedDate = DateTime.Today;
-    private ICollection<Appointment> _appointments = Array.Empty<Appointment>();
+    private ICollection<AppointmentDto> _appointments = Array.Empty<AppointmentDto>();
     private AppointmentOverview _appointmentOverview = new();
 
     [Inject] public ThemeStateProvider ThemeStateProvider { get; set; }
@@ -42,9 +42,9 @@ public partial class AppointmentCalendar
             errors =>
             {
                 Snackbar.Add(errors.ToSeparatedString("; "), Severity.Warning);
-                return Array.Empty<Appointment>();
+                return Array.Empty<AppointmentDto>();
             },
-            Array.Empty<Appointment>).ToList();
+            Array.Empty<AppointmentDto>).ToList();
 
         await _appointmentOverview.ReloadServerData(_appointments.Where(appointment =>
             appointment.From.Date == _selectedDate.Date));
