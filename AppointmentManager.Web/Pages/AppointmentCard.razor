@@ -11,7 +11,7 @@
             <MudForm Model="@_item" @ref="@_form" Validation="@(new Func<object, string, Task<IEnumerable<string>>>(ValidateAsync))" ValidationDelay="0">
                 <MudCardHeader>
                     <CardHeaderContent>
-                        <MudText Typo="Typo.h6">Appointment</MudText>
+                        <MudText Typo="Typo.h6">@Localizer["Appointment"]</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
@@ -19,21 +19,21 @@
                         @bind-Value="_item.Name"
                         For="@(() => _item.Name)"
                         Label="Name"
-                        HelperText="Enter your name here"
+                        HelperText="@Localizer["EnterName"]"
                         Class="mt-3"
                         Required="true"/>
                     <MudTextField
                         @bind-Value="_item.Email"
                         For="@(() => _item.Email)"
                         Label="E-Mail"
-                        HelperText="Enter your e-mail here"
+                        HelperText="@Localizer["EnterEmail"]"
                         Class="mt-3"
                         Required="true"/>
                     <MudTextField
                         @bind-Value="_item.ExtraWishes"
                         For="@(() => _item.ExtraWishes)"
-                        Label="Extra wishes"
-                        HelperText="Enter your extra wishes here"
+                        Label="@Localizer["ExtraWishes"]"
+                        HelperText="@Localizer["EnterExtraWishes"]"
                         Class="mt-3"
                         Required="false"/>
                     <MudDatePicker
@@ -45,18 +45,18 @@
                         TransformOrigin="Origin.CenterCenter"
                         IconSize="Size.Small"
                         Required="true"
-                        Label="Date"
-                        HelperText="Pick a date here"
+                        Label="@Localizer["Date"]"
+                        HelperText="@Localizer["PickDate"]"
                         DateChanged="ChangeDateAsync"/>
                     <MudSelect
                         T="Timeslot"
                         @bind-Value="_selectedTimeSlot"
-                        Label="Timeslot"
-                        HelperText="Pick your timeslot here"
+                        Label="@Localizer["Timeslot"]"
+                        HelperText="@Localizer["PickTimeslot"]"
                         Class="mt-3"
                         Required="true"
                         ToStringFunc="@(timeslot => timeslot is null ? "No time slot available pick another date" : $"{timeslot.From:hh\\:mm} - {timeslot?.To:hh\\:mm}")"
-                        RequiredError="Timeslot is required"
+                        RequiredError="@Localizer["TimeslotRequired"]"
                         Disabled="_timeSlotDisabled">
                         @foreach (var timeslot in _timeSlotsOfDay)
                         {
@@ -66,12 +66,12 @@
                     <MudSelect
                         T="AppointmentCategory"
                         @bind-Value="_selectedCategory"
-                        Label="Category"
-                        HelperText="Pick your category here"
+                        Label="@Localizer["Category"]"
+                        HelperText="@Localizer["PickCategory"]"
                         Class="mt-3"
                         Required="true"
                         ToStringFunc="@(category => category is null ? "" : $"{category.Name}")"
-                        RequiredError="Category is required">
+                        RequiredError="@Localizer["CategoryRequired"]">
                         @foreach (var category in _categories)
                         {
                             <MudSelectItem Value="category"/>
@@ -105,8 +105,8 @@
                     </MudCardContent>
             </MudForm>
         <MudCardActions>
-            <MudButton OnClick="() => Navigation.TryNavigateToReturnUrl()" Disabled="@_showOverlay">Cancel</MudButton>
-            <MudButton OnClick="@(async () => await SubmitAsync())" Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" Disabled="@_showOverlay">Send</MudButton>
+            <MudButton OnClick="() => Navigation.TryNavigateToReturnUrl()" Disabled="@_showOverlay">@Localizer["Cancel"]</MudButton>
+            <MudButton OnClick="@(async () => await SubmitAsync())" Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" Disabled="@_showOverlay">@Localizer["Send"]</MudButton>
         </MudCardActions>
             <MudOverlay Visible="@_showOverlay" DarkBackground="true" Absolute="true">
                 <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>

@@ -1,0 +1,83 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="MakeAnAppointment" xml:space="preserve">
+        <value>Termin vereinbaren</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>E-Mail</value>
+    </data>
+    <data name="EnterName" xml:space="preserve">
+        <value>Name hier eingeben</value>
+    </data>
+    <data name="Name" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="EnterEmail" xml:space="preserve">
+        <value>E-Mail hier eingeben</value>
+    </data>
+    <data name="ExtraWishes" xml:space="preserve">
+        <value>Extrawünsche</value>
+    </data>
+    <data name="EnterExtraWishes" xml:space="preserve">
+        <value>Extrawünsche hier eingeben</value>
+    </data>
+    <data name="Date" xml:space="preserve">
+        <value>Datum</value>
+    </data>
+    <data name="PickDate" xml:space="preserve">
+        <value>Datum hier auswählen</value>
+    </data>
+    <data name="Timeslot" xml:space="preserve">
+        <value>Zeitraum</value>
+    </data>
+    <data name="PickTimeslot" xml:space="preserve">
+        <value>Zeitraum hier auswählen</value>
+    </data>
+    <data name="Category" xml:space="preserve">
+        <value>Kategorie</value>
+    </data>
+    <data name="PickCategory" xml:space="preserve">
+        <value>Kategorie hier auswählen</value>
+    </data>
+    <data name="CategoryRequired" xml:space="preserve">
+        <value>Kategorie erforderlich</value>
+    </data>
+    <data name="Send" xml:space="preserve">
+        <value>Senden</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Abbrechen</value>
+    </data>
+    <data name="AppointmentSendSuccessfully" xml:space="preserve">
+        <value>Terminanfrage erfolgreich verschickt</value>
+    </data>
+    <data name="UploadThreeFiles" xml:space="preserve">
+        <value>Du kannst nur 3 Bilder hochladen</value>
+    </data>
+    <data name="UploadedFileWithSameName" xml:space="preserve">
+        <value>Du hast bereits eine Datei mit dem gleichen Namen hochgeladen </value>
+    </data>
+    <data name="MaximumFileSize" xml:space="preserve">
+        <value>Die Datei ist zu groß. Die maximal zulässige Größe ist 4096 * 4096 bytes</value>
+    </data>
+    <data name="TimeslotRequired" xml:space="preserve">
+        <value>Zeitraum erforderlich</value>
+    </data>
+    <data name="NoTimeSlot" xml:space="preserve">
+        <value>Kein Zeitraum verfügbar. Bitte anderes Datum auswählen</value>
+    </data>
+    <data name="Appointment" xml:space="preserve">
+        <value>Termin</value>
+    </data>
+</root>

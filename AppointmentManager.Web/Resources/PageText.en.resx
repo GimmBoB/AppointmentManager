@@ -1,0 +1,83 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="MakeAnAppointment" xml:space="preserve">
+        <value>Make an appointment</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>E-Mail</value>
+    </data>
+    <data name="EnterName" xml:space="preserve">
+        <value>Enter your name here</value>
+    </data>
+    <data name="Name" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="EnterEmail" xml:space="preserve">
+        <value>Enter your e-mail here</value>
+    </data>
+    <data name="ExtraWishes" xml:space="preserve">
+        <value>Extra wishes</value>
+    </data>
+    <data name="EnterExtraWishes" xml:space="preserve">
+        <value>Enter your extra wishes here</value>
+    </data>
+    <data name="Date" xml:space="preserve">
+        <value>Date</value>
+    </data>
+    <data name="PickDate" xml:space="preserve">
+        <value>Pick a date here</value>
+    </data>
+    <data name="Timeslot" xml:space="preserve">
+        <value>Timeslot</value>
+    </data>
+    <data name="PickTimeslot" xml:space="preserve">
+        <value>Pick your timeslot here</value>
+    </data>
+    <data name="Category" xml:space="preserve">
+        <value>Category</value>
+    </data>
+    <data name="PickCategory" xml:space="preserve">
+        <value>Pick your category here</value>
+    </data>
+    <data name="CategoryRequired" xml:space="preserve">
+        <value>Category is required</value>
+    </data>
+    <data name="Send" xml:space="preserve">
+        <value>Send</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="AppointmentSendSuccessfully" xml:space="preserve">
+        <value>Appointment send successfully</value>
+    </data>
+    <data name="UploadThreeFiles" xml:space="preserve">
+        <value>You can only upload 3 files</value>
+    </data>
+    <data name="UploadedFileWithSameName" xml:space="preserve">
+        <value>You already uploaded a file with the same name</value>
+    </data>
+    <data name="MaximumFileSize" xml:space="preserve">
+        <value>File is to big. Maximum allowed size is 4096 * 4096 bytes</value>
+    </data>
+    <data name="TimeslotRequired" xml:space="preserve">
+        <value>Timeslot is required</value>
+    </data>
+    <data name="NoTimeSlot" xml:space="preserve">
+        <value>No time slot available pick another date</value>
+    </data>
+    <data name="Appointment" xml:space="preserve">
+        <value>Appointment</value>
+    </data>
+</root>

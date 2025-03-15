@@ -39,6 +39,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>ValidationError.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Resources\PageText.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>PageText.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -46,6 +50,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>ValidationError.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\PageText.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>PageText.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

@@ -10,12 +10,12 @@ public class AppointmentValidator : BaseValidator<AppointmentDto>
     {
         RuleFor(item => item.Name)
             .NotEmpty()
-            .WithMessage("Name is required");
+            .WithMessage(CreateLocalizedErrorMessage("NameRequired"));
         
         RuleFor(itm => itm.Email)
             .NotEmpty()
-            .WithMessage("E-mail is required")
+            .WithMessage(CreateLocalizedErrorMessage("EmailRequired"))
             .EmailAddress()
-            .WithMessage("Not a valid e-mail");
+            .WithMessage(CreateLocalizedErrorMessage("EmailNotValid"));
     }
 }

@@ -6,6 +6,7 @@ using AppointmentManager.Web.Validation;
 using Core.Extensions.CollectionRelated;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Localization;
 using MudBlazor;
 using File = AppointmentManager.Web.Models.File;
 
@@ -30,6 +31,7 @@ public partial class AppointmentCard
     [Inject] private NavigationManager Navigation { get; set; }
     [Inject] private ApplicationManagerApiClient ApiClient { get; set; }
     [Inject] private ISnackbar Snackbar { get; set; }
+    [Inject] private IStringLocalizer<PageText> Localizer { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,7 +74,7 @@ public partial class AppointmentCard
                     async appointment =>
                     {
                         await UploadFilesToServerAsync(appointment);
-                        Snackbar.Add("Appointment send successfully", Severity.Success);
+                        Snackbar.Add(Localizer["AppointmentSendSuccessfully"], Severity.Success);
                         Navigation.TryNavigateToReturnUrl();
                         return appointment;
                     },
@@ -176,7 +178,7 @@ public partial class AppointmentCard
         const long maxAllowedSize = 4096 * 4096;
         if (_files.Count >= 3)
         {
-            Snackbar.Add("You can only upload 3 files", Severity.Info);
+            Snackbar.Add(Localizer["UploadThreeFiles"], Severity.Info);
             return;
         }
 
@@ -184,13 +186,13 @@ public partial class AppointmentCard
         
         if (_files.Any(f => f.Name == file.Name))
         {
-            Snackbar.Add("You already uploaded a file with the same name", Severity.Info);
+            Snackbar.Add(Localizer["UploadedFileWithSameName"], Severity.Info);
             return;
         }
 
         if (file.Size > maxAllowedSize)
         {
-            Snackbar.Add("File is to big. Maximum allowed size is 4096 * 4096 bytes", Severity.Info);
+            Snackbar.Add(Localizer["MaximumFileSize"], Severity.Info);
             return;
         }
         

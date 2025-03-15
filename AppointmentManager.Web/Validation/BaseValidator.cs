@@ -34,7 +34,12 @@ public class BaseValidator<T> : AbstractValidator<T>, IBaseValidator<T>
             : (validationContext, result.Errors.Select(e => e.ErrorMessage));
     }
     
-    protected string CreateLocalizedErrorMessage(string errorMessage, params object[] args)
+    protected string CreateLocalizedErrorMessage(string errorMessage)
+    {
+        return CreateLocalizedErrorMessage(errorMessage, Array.Empty<object>());
+    }
+
+    private string CreateLocalizedErrorMessage(string errorMessage, params object[] args)
     {
         return _localizer?[errorMessage, args] ?? string.Format(errorMessage, args);
     }
