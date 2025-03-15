@@ -1,10 +1,11 @@
 ﻿using AppointmentManager.API.Database;
-using AppointmentManager.API.Models;
 using AppointmentManager.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentManager.API.Repositories;
-
+// TODO Telefonnummer hinzufügen
+// Mit Ländervorwahl default nach CultureInfo
+// input in Component erlaubt dann nur zahlen, ländervorwahl ist eigene select liste
 public class AppointmentRepository
 {
     private readonly ApplicationDbContext _dbContext;
