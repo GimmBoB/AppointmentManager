@@ -18,6 +18,6 @@
         <value>E-Mail ist erforderlich</value>
     </data>
     <data name="EmailNotValid" xml:space="preserve">
-        <value>E-Mail is ungültig</value>
+        <value>E-Mail ist ungültig</value>
     </data>
 </root>
