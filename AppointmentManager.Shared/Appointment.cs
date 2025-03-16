@@ -8,6 +8,7 @@ public class Appointment
     public Guid AppointmentCategoryId { get; init; }
     public string Name { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
+    public string? PhoneNumber { get; init; } = string.Empty;
     public string? ExtraWishes { get; init; }
     public DateTime From { get; init; }
     public DateTime To { get; init; }

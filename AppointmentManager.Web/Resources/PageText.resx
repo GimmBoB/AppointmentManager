@@ -87,4 +87,16 @@
     <data name="Appointment" xml:space="preserve">
         <value>Appointment</value>
     </data>
+    <data name="CountryCode" xml:space="preserve">
+        <value>Country Code</value>
+    </data>
+    <data name="Number" xml:space="preserve">
+        <value>Phone number</value>
+    </data>
+    <data name="EnterCountryCode" xml:space="preserve">
+        <value>Pick country code here</value>
+    </data>
+    <data name="EnterPhone" xml:space="preserve">
+        <value>Enter your phone number here</value>
+    </data>
 </root>

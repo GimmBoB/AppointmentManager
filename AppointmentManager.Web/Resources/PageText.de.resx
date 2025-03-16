@@ -80,4 +80,16 @@
     <data name="Appointment" xml:space="preserve">
         <value>Termin</value>
     </data>
+    <data name="CountryCode" xml:space="preserve">
+        <value>Ländervorwahl</value>
+    </data>
+    <data name="Number" xml:space="preserve">
+        <value>Handynummer</value>
+    </data>
+    <data name="EnterCountryCode" xml:space="preserve">
+        <value>Hier Ländervorwahl auswählen</value>
+    </data>
+    <data name="EnterPhone" xml:space="preserve">
+        <value>Hier Handynummer eingeben</value>
+    </data>
 </root>

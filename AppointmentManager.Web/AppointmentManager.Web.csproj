@@ -26,6 +26,7 @@
       <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="6.9.2" />
       <PackageReference Include="FluentValidation" Version="11.11.0" />
       <PackageReference Include="MudBlazor" Version="6.21.0" />
+      <PackageReference Include="Nager.Country" Version="4.0.0" />
       <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
       <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     </ItemGroup>

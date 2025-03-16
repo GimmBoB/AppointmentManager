@@ -54,7 +54,8 @@ public class AppointmentService
             To = dto.To,
             AppointmentCategory = category,
             ExtraWishes = dto.ExtraWishes,
-            Status = AppointmentStatus.Requested
+            Status = AppointmentStatus.Requested,
+            PhoneNumber = $"{dto.CountryCode}-{dto.PhoneNumber}"
         }, ct);
 
         // TODO use templates and send to Admin and Mail Address from Appointment with localization
@@ -84,7 +85,7 @@ public class AppointmentService
         var result = await _repository.UpdateAsync(appointment, ct);
 
         // TODO use templates and send to Admin and Mail Address from Appointment with localization
-        _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
+        // _ = _mailService.CreateAndSendMailFromTemplateAsync("", "Lord doof", "t.weigang@gmx.de", new object());
         
         return ItemApiResult<AppointmentDto>.Succeeded(MapToDto(result));
     }
@@ -136,8 +137,12 @@ public class AppointmentService
 
     private static AppointmentDto MapToDto(Appointment appointment)
     {
+        var phone = appointment.PhoneNumber?.Split("-") ?? new[] { string.Empty, string.Empty };
+        var countryCode = phone[0];
+        var number = phone[1];
         return new AppointmentDto(appointment.Id, appointment.AppointmentCategoryId, appointment.Name,
-            appointment.Email, appointment.ExtraWishes, appointment.From, appointment.To, appointment.Status, appointment.AppointmentExtensions.Select(e => new AppointmentExtensionDto
+            appointment.Email, appointment.ExtraWishes, appointment.From, appointment.To, countryCode, number,
+            appointment.Status, appointment.AppointmentExtensions.Select(e => new AppointmentExtensionDto
             {
                 Id = e.Id,
                 AppointmentId = e.AppointmentId,

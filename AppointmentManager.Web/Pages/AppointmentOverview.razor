@@ -32,6 +32,11 @@
                     @context.Item.Email
                 </CellTemplate>
             </PropertyColumn>
+            <PropertyColumn T="AppointmentDto" TProperty="string" Filterable="false" Property="category => category.PhoneNumber" Title="Number">
+                <CellTemplate>
+                    @(GetPhoneNumber(context.Item))
+                </CellTemplate>
+            </PropertyColumn>
             <PropertyColumn T="AppointmentDto" TProperty="Guid" Filterable="false" Property="category => category.CategoryId" Title="Category">
                 <CellTemplate>
                     @(_categories.SingleOrDefault(c => c.Id == context.Item.CategoryId)?.Name ?? string.Empty)

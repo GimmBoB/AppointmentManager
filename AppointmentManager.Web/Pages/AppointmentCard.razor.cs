@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
+using Nager.Country;
 using File = AppointmentManager.Web.Models.File;
 
 namespace AppointmentManager.Web.Pages;
@@ -26,6 +27,10 @@ public partial class AppointmentCard
     private Timeslot? _selectedTimeSlot;
     private AppointmentCategory[] _categories = Array.Empty<AppointmentCategory>();
     private AppointmentCategory? _selectedCategory;
+    private List<string> _countryCodes = new() { string.Empty };
+    private string _countryCode = string.Empty;
+    private string[] _supportedCountries = new[] {"Germany", "Japan", "Poland"};
+    private string _number = string.Empty;
 
     [Inject] private IBaseValidator<AppointmentDto> Validator { get; set; }
     [Inject] private NavigationManager Navigation { get; set; }
@@ -35,6 +40,13 @@ public partial class AppointmentCard
 
     protected override async Task OnInitializedAsync()
     {
+        var countryProvider = new CountryProvider();
+        var countries = countryProvider.GetCountries();
+        _countryCodes.AddRange(countries.Where(c => _supportedCountries.Contains(c.CommonName))
+            .SelectMany(c => c.CallingCodes.Select(cc => $"{c.Alpha2Code} (+{cc})"))
+            .OrderBy(s => s)
+            .ToList());
+        
         _selectedDate = DateTime.Today;
         await FetchTimeslotsAsync();
         await FetchCategoriesAsync();
@@ -67,6 +79,8 @@ public partial class AppointmentCard
                 _item.From = from;
                 _item.To = to;
                 _item.CategoryId = _selectedCategory?.Id ?? Guid.Empty;
+                _item.CountryCode = _countryCode;
+                _item.PhoneNumber = _number;
 
                 var option = await ApiClient.AddAppointmentAsync(_item);
 

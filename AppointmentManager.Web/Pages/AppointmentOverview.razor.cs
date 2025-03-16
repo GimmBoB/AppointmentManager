@@ -1,4 +1,5 @@
-﻿using AppointmentManager.Shared;
+﻿using System.Text.RegularExpressions;
+using AppointmentManager.Shared;
 using AppointmentManager.Web.HttpClients;
 using AppointmentManager.Web.Models;
 using AppointmentManager.Web.Shared;
@@ -137,4 +138,15 @@ public partial class AppointmentOverview
             _ => Color.Warning
         };
     }
+
+    private string GetPhoneNumber(AppointmentDto contextItem)
+    {
+        if (string.IsNullOrWhiteSpace(contextItem.CountryCode))
+            return contextItem.PhoneNumber ?? string.Empty;
+        
+        return $"{MyRegex().Match(contextItem.CountryCode).Groups[1].Value} {contextItem.PhoneNumber ?? string.Empty}";
+    }
+
+    [GeneratedRegex("\\(([^)]*)\\)")]
+    private static partial Regex MyRegex();
 }

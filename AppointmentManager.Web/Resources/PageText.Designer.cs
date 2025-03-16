@@ -105,6 +105,15 @@ namespace AppointmentManager.Web.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Country Code.
+        /// </summary>
+        internal static string CountryCode {
+            get {
+                return ResourceManager.GetString("CountryCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         internal static string Date {
@@ -119,6 +128,15 @@ namespace AppointmentManager.Web.Resources {
         internal static string Email {
             get {
                 return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick country code here.
+        /// </summary>
+        internal static string EnterCountryCode {
+            get {
+                return ResourceManager.GetString("EnterCountryCode", resourceCulture);
             }
         }
         
@@ -146,6 +164,15 @@ namespace AppointmentManager.Web.Resources {
         internal static string EnterName {
             get {
                 return ResourceManager.GetString("EnterName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter your phone number here.
+        /// </summary>
+        internal static string EnterPhone {
+            get {
+                return ResourceManager.GetString("EnterPhone", resourceCulture);
             }
         }
         
@@ -191,6 +218,15 @@ namespace AppointmentManager.Web.Resources {
         internal static string NoTimeSlot {
             get {
                 return ResourceManager.GetString("NoTimeSlot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone number.
+        /// </summary>
+        internal static string Number {
+            get {
+                return ResourceManager.GetString("Number", resourceCulture);
             }
         }
         

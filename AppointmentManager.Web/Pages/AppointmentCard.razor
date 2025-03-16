@@ -29,6 +29,28 @@
                         HelperText="@Localizer["EnterEmail"]"
                         Class="mt-3"
                         Required="true"/>
+                    <MudStack Row="true">
+                        <MudSelect
+                            T="string"
+                            Style="max-width: 125px !important;"
+                            bind-Value="_countryCode"
+                            ValueChanged="@(s => _countryCode = s)"
+                            Label="@Localizer["CountryCode"]"
+                            HelperText="@Localizer["EnterCountryCode"]"
+                            AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var code in _countryCodes)
+                            {
+                                <MudSelectItem Value="code"/>
+                            }
+                        </MudSelect>
+                        <MudTextField
+                            T="string"
+                            bind-Value="_number"
+                            ValueChanged="@(s => _number = s)"
+                            Label="@Localizer["Number"]"
+                            HelperText="@Localizer["EnterPhone"]"
+                            Mask="@(new PatternMask("000000000000000"))"/>
+                    </MudStack>
                     <MudTextField
                         @bind-Value="_item.ExtraWishes"
                         For="@(() => _item.ExtraWishes)"
