@@ -123,8 +123,8 @@ public class AppointmentService
         if (errors.Count > 0)
             return errors;
 
-        var from = TimeSpan.FromHours(dto.From.Hour);
-        var to = TimeSpan.FromHours(dto.To.Hour);
+        var from = new TimeSpan(dto.From.Hour, dto.From.Minute, 0);
+        var to = new TimeSpan(dto.To.Hour, dto.To.Minute, 0);
         
         if (!timeslots.Any(slot => slot.From == from && slot.To == to))
             errors.Add($"No {nameof(AppointmentTimeSlot)} found for {dto.From:U} - {dto.To:U}");
